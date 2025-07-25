@@ -40,16 +40,18 @@ if commodity_type == "DG":
     st.markdown(
         """
         <style>
-        /* Target the commodity_type selectbox input area */
+        /* Target the commodity_type selectbox input area fully */
         div[data-testid="stSelectbox"][data-key="commodity_type"] > div[role="combobox"] > div:first-child {
-            background-color: #ffcccc !important;
-            border: 2px solid red !important;
-            border-radius: 4px;
+            background-color: #ffcccc !important;  /* Light red/pink */
+            border: 2px solid red !important;      /* Red border */
+            border-radius: 8px;
+            padding: 0.25rem 0.5rem;                /* Add some padding for better fill */
         }
         </style>
         """,
         unsafe_allow_html=True
     )
+
 
     # Show MSDS Section
     st.subheader("📄 MSDS (Material Safety Data Sheet)")
