@@ -69,7 +69,7 @@ if storage_type in ["Frozen", "Chilled Storage"]:
     required_temperature = st.number_input("Required Temperature (°C)", step=0.1)
 
 package_type = st.selectbox("Package Type", package_types)
-unit = st.selectbox("Measurement Unit", units)
+    unit = st.selectbox("Measurement Unit", units)
 
 # Conditional Fields for Package Type
 if package_type == "Boxes" or package_type == "Bags":
@@ -138,13 +138,17 @@ elif handling_out == "Pieces":
     st.info("Inventory will be tracked by: Pallets")
 
 # ------------------- SECTION 4: Detailed Handling Requirements -------------------
-if handling_out in ["Loose", "Pallets", "Pieces", "Boxes", "Loading"]:
+if handling_out in ["Loose", "Palletised", "Pieces", "Boxes", "Loading"]:
     st.header("🟥 Section 4: Detailed Handling Requirements")
     sku_count = st.number_input("Number of SKUs", min_value=0)
 
-    # Show "Are SKUs in the Pallets Mixed?" only for these handling_out values
+    # Show 'Are SKUs in the Pallets Mixed?' only for specific handling_out values
     if handling_out in ["Loose", "Palletised", "Pieces", "Boxes"]:
         mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes", "No"])
+
+        # If 'Yes' is selected, show segregation required option
+        if mixed_skus == "Yes":
+            segregation_required = st.checkbox("Segregation Required?")
 
     tracking_method = st.selectbox("How is Inventory Tracking Maintained?", ["Lot Number", "Expiry Date", "SKU Value"])
 
