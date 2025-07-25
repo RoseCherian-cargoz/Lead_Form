@@ -33,19 +33,18 @@ units = ["CBM", "SQFT", "SQM","Pallete","Fixed Unit"]
 coo_options = ["Mainland", "Freezone", "On the way to UAE", "Another Warehouse"]
 
 storage_location = st.selectbox("Storage Location", locations)
-commodity = st.text_input("Commodity")
 commodity_type = st.selectbox("Commodity Type", commodity_types)
 
 # If DG is selected → Highlight + Show MSDS upload
 if commodity_type == "DG":
-    # Highlight the selectbox
     st.markdown(
         """
         <style>
-        div[data-baseweb="select"] {
+        /* Target the commodity_type selectbox input area */
+        div[data-testid="stSelectbox"][data-key="commodity_type"] > div[role="combobox"] > div:first-child {
             background-color: #ffcccc !important;
             border: 2px solid red !important;
-            border-radius: 8px;
+            border-radius: 4px;
         }
         </style>
         """,
@@ -58,6 +57,7 @@ if commodity_type == "DG":
     
     msds_file = st.file_uploader("Upload MSDS Document", type=["pdf", "docx", "jpg", "png"])
 
+commodity = st.text_input("Commodity")
 storage_type = st.selectbox("Storage Type", storage_types)
 
 # If Frozen or Chilled Storage is selected, show temperature field
