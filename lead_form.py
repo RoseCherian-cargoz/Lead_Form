@@ -4,13 +4,18 @@ from datetime import date
 st.set_page_config(page_title="Storage Requirement Form", layout="centered")
 
 st.title("📦 Storage Requirement Form")
-
 # ------------------- SECTION 1: Contact Details -------------------
 st.header("🟩 Section 1: Contact Details (Auto-Fetched)")
-st.text_input("Company Name", value="Autofetched Co.", disabled=True)
-st.text_input("Point of Contact", value="John Doe", disabled=True)
-st.text_input("Email", value="john@autofetched.com", disabled=True)
-st.text_input("Phone", value="+971500000000", disabled=True)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.text_input("Company Name", value="Autofetched Co.", disabled=True)
+    st.text_input("Point of Contact", value="John Doe", disabled=True)
+
+with col2:
+    st.text_input("Email", value="john@autofetched.com", disabled=True)
+    st.text_input("Phone", value="+971500000000", disabled=True)
 
 # ------------------- SECTION 2: Storage Details -------------------
 st.header("🟦 Section 2: Storage Details")
