@@ -34,8 +34,9 @@ commodity_types = [
 
 storage_types = ["Non Air Conditioned", "Ambient", "Chilled Storage", "Frozen","Open Yard"]
 package_types = ["Pallets", "Boxes", "Oversized/Overweight", "Container","Bags"]
-units = ["CBM", "SQFT", "SQM","Pallete","Fixed Unit"]
+billing_types = ["CBM", "SQFT", "SQM", "Per Pallet", "Fixed Unit"]
 coo_options = ["Mainland", "Freezone", "On the way to UAE", "Another Warehouse"]
+
 # Row 1: Storage Location (Full Width)
 storage_location = st.selectbox("Storage Location", locations)
 
@@ -75,8 +76,12 @@ with row3_col2:
     if storage_type in ["Frozen", "Chilled Storage"]:
         required_temperature = st.number_input("Required Temperature (°C)", step=0.1)
 
-# Row 4: Package Type (Left)
-package_type = st.selectbox("Package Type", package_types)
+# Row 4: Package Type (Left) | Billing Type (Right)
+row4_col1, row4_col2 = st.columns(2)
+with row4_col1:
+    package_type = st.selectbox("Package Type", package_types)
+with row4_col2:
+    billing_type = st.selectbox("Billing Type", billing_types)
 
 # Conditional Layout for Package Types
 if package_type == "Pallets":
@@ -141,6 +146,7 @@ with row5_col2:
 
 # Upload Packing List
 packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf", "doc", "jpg", "png"])
+
 
 # ------------------- SECTION 3: Handling Requirements -------------------
 st.header("🟧 Section 3: Handling Requirements")
