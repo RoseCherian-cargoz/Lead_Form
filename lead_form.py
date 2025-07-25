@@ -33,14 +33,14 @@ units = ["CBM", "SQFT", "SQM","Pallete","Fixed Unit"]
 coo_options = ["Mainland", "Freezone", "On the way to UAE", "Another Warehouse"]
 
 storage_location = st.selectbox("Storage Location", locations)
-commodity_type = st.selectbox("Commodity Type", commodity_types)
+commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type")
+
 
 # If DG is selected → Highlight + Show MSDS upload
 if commodity_type == "DG":
     st.markdown(
         """
         <style>
-        /* Target the commodity_type selectbox input area */
         div[data-testid="stSelectbox"][data-key="commodity_type"] > div > div > div {
             background-color: #ff0000 !important;  /* bright red */
             border: 2px solid red !important;
