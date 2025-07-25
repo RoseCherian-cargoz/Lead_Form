@@ -142,15 +142,15 @@ if handling_out in ["Loose", "Palletised", "Pieces", "Boxes", "Loading"]:
     st.header("🟥 Section 4: Detailed Handling Requirements")
     sku_count = st.number_input("Number of SKUs", min_value=0)
 
-    # Show 'Are SKUs in the Pallets Mixed?' only for specific handling_out values
     if handling_out in ["Loose", "Palletised", "Pieces", "Boxes"]:
         mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes", "No"])
 
-        # If 'Yes' is selected, show segregation required option
         if mixed_skus == "Yes":
-            segregation_required = st.checkbox("Segregation Required?")
+            # Show the checkbox as checked and disabled (mandatory)
+            st.checkbox("Segregation Required?", value=True, disabled=True)
 
     tracking_method = st.selectbox("How is Inventory Tracking Maintained?", ["Lot Number", "Expiry Date", "SKU Value"])
+
 
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
