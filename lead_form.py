@@ -69,7 +69,7 @@ if storage_type in ["Frozen", "Chilled Storage"]:
     required_temperature = st.number_input("Required Temperature (°C)", step=0.1)
 
 package_type = st.selectbox("Package Type", package_types)
-    unit = st.selectbox("Measurement Unit", units)
+unit = st.selectbox("Measurement Unit", units)
 
 # Conditional Fields for Package Type
 if package_type == "Boxes" or package_type == "Bags":
