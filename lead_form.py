@@ -35,22 +35,87 @@ coo_options = ["Mainland", "Freezone", "On the way to UAE", "Another Warehouse"]
 storage_location = st.selectbox("Storage Location", locations)
 commodity = st.text_input("Commodity")
 commodity_type = st.selectbox("Commodity Type", commodity_types)
+
+# If DG is selected → Highlight + Show MSDS upload
+if commodity_type == "DG":
+    # Highlight the selectbox
+    st.markdown(
+        """
+        <style>
+        div[data-baseweb="select"] {
+            background-color: #ffcccc !important;
+            border: 2px solid red !important;
+            border-radius: 8px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Show MSDS Section
+    st.subheader("📄 MSDS (Material Safety Data Sheet)")
+    st.info("⚠️ DG selected: Please upload the MSDS document for safety compliance.")
+    
+    msds_file = st.file_uploader("Upload MSDS Document", type=["pdf", "docx", "jpg", "png"])
+
 storage_type = st.selectbox("Storage Type", storage_types)
+storage_type = st.selectbox("Storage Type", storage_types)
+
+# If Frozen or Chilled Storage is selected, show temperature field
+required_temperature = None
+if storage_type in ["Frozen", "Chilled Storage"]:
+    required_temperature = st.number_input("Required Temperature (°C)", step=0.1)
+
 package_type = st.selectbox("Package Type", package_types)
 unit = st.selectbox("Measurement Unit", units)
 
 # Conditional Fields for Package Type
-if package_type == "Loose":
-    loose_items = st.number_input("Number of Loose Items", min_value=0)
-elif package_type == "Palletised":
-    num_pallets = st.number_input("Number of Pallets", min_value=0)
-    dimensions_pallet = st.text_input("Dimensions of Commodity (Palletised)")
+if package_type == "Boxes" or package_type == "Bags":
+    expected_space = st.number_input(f"Expected Space for {package_type}", min_value=0.0, step=0.1)
+    space_unit = st.selectbox("Select Unit", ["CBM", "SQFT"])
+
 elif package_type == "Oversized/Overweight":
-    weight = st.text_input("Weight of Commodity")
-    dimensions_oversize = st.text_input("Dimensions of Commodity (Oversized)")
+    weight = st.number_input("Weight of Commodity (in KG)", min_value=0.0, step=0.1)
+    weight_unit = st.selectbox("Weight Unit", ["KG", "TON"])
+    expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1)
+    space_unit = st.selectbox("Select Unit", ["CBM", "SQFT"])
+
 elif package_type == "Container":
-    container_size = st.text_input("Size of Container")
-    dimensions_container = st.text_input("Dimensions of Commodity (Container)")
+    container_type = st.selectbox("Container Size", ["40ft", "20ft"])
+    num_containers = st.number_input("Number of Containers", min_value=1, step=1)
+    
+    if container_type == "40ft":
+        cbm_per_container = 70
+        sqft_per_container = 130
+    else:  # 20ft
+        cbm_per_container = 30
+        sqft_per_container = 65
+
+    total_cbm = cbm_per_container * num_containers
+    total_sqft = sqft_per_container * num_containers
+
+    st.info(f"Approx. Expected Space: **{total_cbm} CBM** or **{total_sqft} SQFT**")
+
+elif package_type == "Pallets":
+    pallet_type = st.selectbox("Type of Pallet", ["Standard", "Euro"])
+    num_pallets = st.number_input("Number of Pallets", min_value=1, step=1)
+
+    if pallet_type == "Standard":
+        cbm_per_pallet = 1.8
+        sqft_per_pallet = 13
+    else:  # Euro
+        cbm_per_pallet = 1.44
+        sqft_per_pallet = 10.03
+
+    total_cbm = cbm_per_pallet * num_pallets
+    total_sqft = sqft_per_pallet * num_pallets
+
+    st.info(f"Approx. Expected Space: **{total_cbm:.2f} CBM** or **{total_sqft:.2f} SQFT**")
+
+elif package_type == "Other":
+    other_commodity = st.text_input("Enter Commodity Type")
+    expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1)
+    space_unit = st.selectbox("Select Unit", ["CBM", "SQFT"])
 
 shipment_location = st.selectbox("COO / Location of Shipment", coo_options)
 expected_start = st.date_input("Expected Start Date", min_value=date.today())
@@ -59,14 +124,11 @@ packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pd
 # ------------------- SECTION 3: Handling Requirements -------------------
 st.header("🟧 Section 3: Handling Requirements")
 
-handling_in = st.selectbox("Handling In", ["Loose", "Palletised", "Not Required"])
-handling_out = st.selectbox("Handling Out", ["Loose", "Palletised", "Not Required", "Pieces"])
-
-if handling_in in ["Loose", "Palletised"]:
-    segregation_required = st.selectbox("Segregation Required?", ["Yes", "No"])
+handling_in = st.selectbox("Handling In", ["Loose", "Pallets", "Not Required","Offloading"])
+handling_out = st.selectbox("Handling Out", ["Loose", "Pallets", "Not Required", "Pieces","Loading","Boxes"])
 
 # Inventory Tracking Display
-if handling_out == "Palletised":
+if handling_out == "Pallets":
     st.info("Inventory will be tracked by: Pallets")
 elif handling_out == "Loose":
     st.info("Inventory will be tracked by: Boxes")
@@ -74,11 +136,14 @@ elif handling_out == "Pieces":
     st.info("Inventory will be tracked by: Pallets")
 
 # ------------------- SECTION 4: Detailed Handling Requirements -------------------
-if handling_out != "Not Required":
+if handling_out in ["Loose", "Pallets", "Pieces", "Boxes", "Loading"]:
     st.header("🟥 Section 4: Detailed Handling Requirements")
     sku_count = st.number_input("Number of SKUs", min_value=0)
-    if handling_out == "Palletised":
+
+    # Show "Are SKUs in the Pallets Mixed?" only for these handling_out values
+    if handling_out in ["Loose", "Palletised", "Pieces", "Boxes"]:
         mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes", "No"])
+
     tracking_method = st.selectbox("How is Inventory Tracking Maintained?", ["Lot Number", "Expiry Date", "SKU Value"])
 
 # ------------------- Documents Section -------------------
