@@ -18,9 +18,24 @@ with col2:
     st.text_input("Phone", value="+971500000000", disabled=True)
 
 # ------------------- SECTION 2: Storage Details -------------------
-# ------------------- SECTION 2: Storage Details -------------------
 st.header("🟦 Section 2: Storage Details")
 
+locations = [
+    "Jafza", "Al Quoz", "Al Quasis", "DIP", "DIP1", "DIP2", "DIC", "Ras Al Khor", "Sharjah Industrial Area",
+    "Umm Ramool", "Emirates Industrial City", "Ad Dar al Baida", "Al Sulay", "Al Khabaisi", "Jebel Ali",
+    "Techno Park", "Al Khawaneej", "Al Muqtta", "Al Sajja", "Dubai Land", "Ajman Industrial Area",
+    "Hamriyah Free Zone", "DWC", "Musaffah", "Dubai Production City", "ICAD", "Al Qirawan", "Ash Shifa",
+    "Al Ruwayyah", "International City"
+]
+
+commodity_types = [
+    "Food", "DG", "General Goods", "Perishable Artwork", "Equipment", "Machinery", "Medical", "Pharma", "Other"
+]
+
+storage_types = ["Non Air Conditioned", "Ambient", "Chilled Storage", "Frozen","Open Yard"]
+package_types = ["Pallets", "Boxes", "Oversized/Overweight", "Container","Bags"]
+units = ["CBM", "SQFT", "SQM","Pallete","Fixed Unit"]
+coo_options = ["Mainland", "Freezone", "On the way to UAE", "Another Warehouse"]
 # Row 1: Storage Location (Full Width)
 storage_location = st.selectbox("Storage Location", locations)
 
