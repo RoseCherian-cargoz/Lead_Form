@@ -59,7 +59,6 @@ if commodity_type == "DG":
     msds_file = st.file_uploader("Upload MSDS Document", type=["pdf", "docx", "jpg", "png"])
 
 storage_type = st.selectbox("Storage Type", storage_types)
-storage_type = st.selectbox("Storage Type", storage_types)
 
 # If Frozen or Chilled Storage is selected, show temperature field
 required_temperature = None
