@@ -147,7 +147,7 @@ if handling_out in ["Loose", "Palletised", "Pieces", "Boxes", "Loading"]:
 
         if mixed_skus == "Yes":
             # Show the checkbox as checked and disabled (mandatory)
-            st.checkbox("Segregation Required?", value=True, disabled=True)
+            st.checkbox("Segregation Required", value=True, disabled=True)
 
     tracking_method = st.selectbox("How is Inventory Tracking Maintained?", ["Lot Number", "Expiry Date", "SKU Value"])
 
