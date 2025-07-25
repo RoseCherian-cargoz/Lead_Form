@@ -34,7 +34,7 @@ commodity_types = [
 
 storage_types = ["Non Air Conditioned", "Ambient", "Chilled Storage", "Frozen","Open Yard"]
 package_types = ["Pallets", "Boxes", "Oversized/Overweight", "Container","Bags"]
-billing_types = ["CBM", "SQFT", "SQM", "Per Pallet", "Fixed Unit"]
+billing_unit = ["CBM", "SQFT", "SQM", "Per Pallet", "Fixed Unit"]
 coo_options = ["Mainland", "Freezone", "On the way to UAE", "Another Warehouse"]
 
 # Row 1: Storage Location (Full Width)
@@ -81,7 +81,7 @@ row4_col1, row4_col2 = st.columns(2)
 with row4_col1:
     package_type = st.selectbox("Package Type", package_types)
 with row4_col2:
-    billing_type = st.selectbox("Billing Type", billing_types)
+    billing_unit = st.selectbox("Billing Unit", billing_unit)
 
 # Conditional Layout for Package Types
 if package_type == "Pallets":
@@ -138,11 +138,12 @@ elif package_type == "Bags":
         space_unit = st.selectbox("Select Unit", ["CBM", "SQFT"])
 
 # COO / Location of Shipment (Left) | Expected Start Date (Right)
-row5_col1, row5_col2 = st.columns(2)
-with row5_col1:
+# COO / Location of Shipment and Expected Start Date (Stacked on Left)
+col_left, col_right = st.columns([1, 3])  # Left for fields, Right for spacing
+with col_left:
     shipment_location = st.selectbox("COO / Location of Shipment", coo_options)
-with row5_col2:
     expected_start = st.date_input("Expected Start Date", min_value=date.today())
+
 
 # Upload Packing List
 packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf", "doc", "jpg", "png"])
