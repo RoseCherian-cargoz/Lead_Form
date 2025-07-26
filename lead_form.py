@@ -57,26 +57,25 @@ row2_col1, row2_col2 = st.columns(2)
 
 # --- COMMODITY TYPE (Left Column) ---
 with row2_col1:
-    if "commodity_type" not in st.session_state:
-        st.session_state["commodity_type"] = commodity_types[0]
+    highlight_style = """
+    <style>
+    .highlight-selectbox > div[data-testid="stSelectbox"] {
+        background-color: #ffe6e6;
+        border: 2px solid red;
+        border-radius: 8px;
+        padding: 5px;
+    }
+    </style>
+    """
 
-    # Custom-styled container around the selectbox
-    if st.session_state["commodity_type"] == "DG":
-        st.markdown(
-            """
-            <style>
-            div[data-testid="stSelectbox"] {
-                background-color: #ffe6e6;
-                border: 2px solid red;
-                border-radius: 8px;
-                padding: 5px;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
+    if commodity_type := st.session_state.get("commodity_type", "Non-DG") == "DG":
+        st.markdown(highlight_style, unsafe_allow_html=True)
+        st.markdown('<div class="highlight-selectbox">', unsafe_allow_html=True)
+    else:
+        st.markdown('<div>', unsafe_allow_html=True)
 
     commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # --- COMMODITY INPUT (Right Column) ---
 with row2_col2:
