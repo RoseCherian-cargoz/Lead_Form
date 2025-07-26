@@ -249,7 +249,7 @@ if st.button("Submit Form"):
 
     # Prepare summary of inputs
     summary = {
-        Company Name: Autofetched Co.,
+        "Company Name": "Autofetched Co.",
         "Point of Contact": "John Doe",
         "Email": "john@autofetched.com",
         "Phone": "+971500000000",
