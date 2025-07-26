@@ -119,20 +119,29 @@ documents = st.file_uploader("Upload Documents", accept_multiple_files=True)
 
 # ------------------- Save to Excel -------------------
 def save_to_excel(summary, file_path="storage_leads.xlsx"):
+    import openpyxl
     df = pd.DataFrame([summary])
     sheet_name = "Leads"
 
     if os.path.exists(file_path):
-        # Load existing Excel file
-        with pd.ExcelWriter(file_path, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:
-            start_row = writer.sheets[sheet_name].max_row
-            df.to_excel(writer, sheet_name=sheet_name, index=False, header=False, startrow=start_row)
+        book = openpyxl.load_workbook(file_path)
+        if sheet_name in book.sheetnames:
+            with pd.ExcelWriter(file_path, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:
+                writer.book = book
+                writer.sheets = {ws.title: ws for ws in book.worksheets}
+                start_row = writer.sheets[sheet_name].max_row
+                df.to_excel(writer, sheet_name=sheet_name, index=False, header=False, startrow=start_row)
+        else:
+            # Sheet does not exist, create new sheet with headers
+            with pd.ExcelWriter(file_path, engine="openpyxl", mode="a") as writer:
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
     else:
-        # Create a new Excel file with header
+        # File does not exist, create new file with sheet and headers
         with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
             df.to_excel(writer, sheet_name=sheet_name, index=False)
 
     return file_path
+
 
 # ------------------- Submit Button -------------------
 if st.button("Submit Form"):
