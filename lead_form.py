@@ -122,7 +122,7 @@ documents = st.file_uploader("Upload Documents", accept_multiple_files=True)
 # from googleapiclient.discovery import build
 
 # SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
-# SHEET_NAME = 'Lead Requirements Sheet'  # exact name of the sheet tab
+# SHEET_NAME = 'Sheet1'  # exact name of the sheet tab
 
 # SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
