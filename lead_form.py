@@ -40,22 +40,25 @@ coo_options = ["Mainland", "Freezone", "On the way to UAE", "Another Warehouse"]
 # Row 1: Storage Location (Full Width)
 storage_location = st.selectbox("Storage Location", locations)
 
-# Row 2: Commodity Type (Left) | Commodity (Right)
-row2_col1, row2_col2 = st.columns(2)
-with row2_col1:
-    # Wrap Commodity Type in a container for unique targeting
-    st.markdown('<div id="commodity-type-container">', unsafe_allow_html=True)
-    commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type")
-    st.markdown('</div>', unsafe_allow_html=True)
+# # Row 2: Commodity Type (Left) | Commodity (Right)
+# row2_col1, row2_col2 = st.columns(2)
+# with row2_col1:
+#     # Wrap Commodity Type in a container for unique targeting
+#     st.markdown('<div id="commodity-type-container">', unsafe_allow_html=True)
+#     commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type")
+#     st.markdown('</div>', unsafe_allow_html=True)
 
-with row2_col2:
-    commodity = st.text_input("Commodity")
+# with row2_col2:
+#     commodity = st.text_input("Commodity")
 
 # DG Highlight + MSDS Upload
 # Row 2: Commodity Type (Left) | Commodity (Right)
 row2_col1, row2_col2 = st.columns(2)
 
 with row2_col1:
+    # Open wrapper before selectbox
+    st.markdown('<div id="commodity-type-container">', unsafe_allow_html=True)
+    commodity_type = st.selectbox("Commodity Type", ["Normal", "DG"], key="commodity_type")
     # Close wrapper after selectbox
     st.markdown('</div>', unsafe_allow_html=True)
 
