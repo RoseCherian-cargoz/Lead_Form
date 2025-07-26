@@ -43,33 +43,64 @@ storage_location = st.selectbox("Storage Location", locations)
 # Row 2: Commodity Type (Left) | Commodity (Right)
 row2_col1, row2_col2 = st.columns(2)
 with row2_col1:
+    # Wrap Commodity Type in a container for unique targeting
+    st.markdown('<div id="commodity-type-container">', unsafe_allow_html=True)
     commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type")
+    st.markdown('</div>', unsafe_allow_html=True)
+
 with row2_col2:
     commodity = st.text_input("Commodity")
 
 # DG Highlight + MSDS Upload
+# Row 2: Commodity Type (Left) | Commodity (Right)
+row2_col1, row2_col2 = st.columns(2)
+
+with row2_col1:
+    # Open wrapper before selectbox
+    st.markdown('<div id="commodity-type-container">', unsafe_allow_html=True)
+    commodity_type = st.selectbox("Commodity Type", ["Normal", "DG"], key="commodity_type")
+    # Close wrapper after selectbox
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with row2_col2:
+    commodity = st.text_input("Commodity")
+
+# Apply conditional styling
 if commodity_type == "DG":
     st.markdown(
         """
         <style>
-        /* Target selectbox container */
-        div[data-baseweb="select"] {
+        /* Only style inside #commodity-type-container */
+        #commodity-type-container [data-baseweb="select"] {
             background-color: #ff0000 !important;
             border: 2px solid red !important;
             border-radius: 8px;
         }
 
-        /* Target text inside selectbox */
-        div[data-baseweb="select"] span {
+        #commodity-type-container [data-baseweb="select"] span {
             color: white !important;
+        }
+
+        /* MSDS section */
+        .msds-section {
+            background-color: #ffe6e6;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ffcccc;
+            margin-top: 1rem;
         }
         </style>
         """,
         unsafe_allow_html=True
     )
+
+    # MSDS Upload section
+    st.markdown('<div class="msds-section">', unsafe_allow_html=True)
     st.subheader("📄 MSDS (Material Safety Data Sheet)")
     st.info("⚠️ DG selected: Please upload the MSDS document for safety compliance.")
     msds_file = st.file_uploader("Upload MSDS Document", type=["pdf", "docx", "jpg", "png"])
+    st.markdown('</div>', unsafe_allow_html=True)
+
 
 # Row 3: Storage Type (Left) | Required Temperature (Right if needed)
 row3_col1, row3_col2 = st.columns(2)
