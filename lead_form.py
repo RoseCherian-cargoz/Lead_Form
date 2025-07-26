@@ -1,21 +1,30 @@
 import streamlit as st
 from datetime import date
+import pandas as pd
+import os
+from openpyxl import load_workbook
 
+# ---------------- Streamlit Config ----------------
 st.set_page_config(page_title="Storage Requirement Form", layout="centered")
 
 st.title("📦 Lead Form")
+
 # ------------------- SECTION 1: Contact Details -------------------
 st.header("🟩 Section 1: Contact Details (Auto-Fetched)")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.text_input("Company Name", value="Autofetched Co.", disabled=True, help="Company name fetched from the landing page")
-    st.text_input("Point of Contact", value="John Doe", disabled=True, help="Contact person for this lead-details fetched from landing page")
+    company_name = st.text_input("Company Name", value="Autofetched Co.", disabled=True,
+                                  help="Company name fetched from the landing page")
+    contact_person = st.text_input("Point of Contact", value="John Doe", disabled=True,
+                                    help="Contact person for this lead-details fetched from landing page")
 
 with col2:
-    st.text_input("Email", value="john@autofetched.com", disabled=True, help="Email address of the contact-details fetched from landing page")
-    st.text_input("Phone", value="+971500000000", disabled=True, help="Phone number of the contact-details fetched from landing page")
+    email = st.text_input("Email", value="john@autofetched.com", disabled=True,
+                           help="Email address of the contact-details fetched from landing page")
+    phone = st.text_input("Phone", value="+971500000000", disabled=True,
+                           help="Phone number of the contact-details fetched from landing page")
 
 # ------------------- SECTION 2: Storage Details -------------------
 st.header("🟦 Section 2: Storage Details")
@@ -34,184 +43,60 @@ commodity_types = [
 
 storage_types = ["Non Air Conditioned", "Ambient", "Chilled Storage", "Frozen","Open Yard"]
 package_types = ["Pallets", "Boxes", "Oversized/Overweight", "Container","Bags"]
-billing_unit = ["CBM", "SQFT", "SQM", "Per Pallet", "Fixed Unit"]
+billing_units = ["CBM", "SQFT", "SQM", "Per Pallet", "Fixed Unit"]
 coo_options = ["Mainland", "Freezone", "On the way to UAE", "Another Warehouse"]
 
 # Row 1: Storage Location (Full Width)
-storage_location = st.multiselect("Storage Location", locations, help="Select the storage location/locations for the goods prefered by the lead")
+storage_location = st.multiselect("Storage Location", locations, help="Select the storage location/locations for the goods")
 
-# DG Highlight + MSDS Upload
 # Row 2: Commodity Type (Left) | Commodity (Right)
 row2_col1, row2_col2 = st.columns(2)
-
-# --- COMMODITY TYPE (Left Column) ---
 with row2_col1:
-    commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type",
-                                 help="Select the type of commodity to be stored")
+    commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type")
+with row2_col2:
+    commodity = st.text_input("Commodity", key="commodity_text_input")
 
-# Inject style only after rendering
+# DG-specific warning
 if st.session_state["commodity_type"] == "DG":
     st.markdown("""
-        <style>
-        label:has(+ div[data-testid="stSelectbox"]) {
-            background-color: #ffe6e6;
-            border: 2px solid red;
-            border-radius: 8px;
-            padding: 8px;
-            display: block;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-# --- COMMODITY (Right Column) ---
-with row2_col2:
-    commodity = st.text_input("Commodity", key="commodity_text_input", help="Specify the exact commodity name or details")
-
-# --- DG-SPECIFIC FIELDS ---
-if commodity_type == "DG":
-    # MSDS warning with fully red styling
-    st.markdown(
-        """
-        <div style="
-            background-color: #ffcccc;
-            color: #a94442;
-            border: 2px solid red;
-            padding: 16px;
-            border-radius: 8px;
-            font-weight: bold;
-            margin-top: 10px;">
-            ⚠️ <strong>DG selected:</strong> Please upload the MSDS document for safety compliance.
+        <div style="background-color:#ffcccc; border:2px solid red; padding:10px; border-radius:5px;">
+        ⚠️ <b>DG selected:</b> Please upload the MSDS document for safety compliance.
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    """, unsafe_allow_html=True)
+    msds_file = st.file_uploader("Upload MSDS Document", type=["pdf","docx","jpg","png"], key="msds_uploader")
 
-    st.subheader("📄 MSDS (Material Safety Data Sheet)")
-    msds_file = st.file_uploader(
-        "Upload MSDS Document", type=["pdf", "docx", "jpg", "png"], key="msds_uploader",
-        help="Upload Material Safety Data Sheet for Dangerous Goods"
-    )
-
-# Row 3: Storage Type (Left) | Required Temperature (Right if needed)
+# Storage Type & Temperature
 row3_col1, row3_col2 = st.columns(2)
 with row3_col1:
-    storage_type = st.selectbox("Storage Type", storage_types, help="Choose the type of enviroment required for the goods")
+    storage_type = st.selectbox("Storage Type", storage_types)
 with row3_col2:
     required_temperature = None
     if storage_type in ["Frozen", "Chilled Storage"]:
-        required_temperature = st.number_input("Required Temperature (°C)", step=0.1,
-                                               help="Specify the required storage temperature in Celsius")
+        required_temperature = st.number_input("Required Temperature (°C)", step=0.1)
 
-# Row 4: Package Type (Left) | Billing Type (Right)
+# Package Type & Billing Unit
 row4_col1, row4_col2 = st.columns(2)
 with row4_col1:
-    package_type = st.selectbox("Package Type", package_types, help="Select the packaging type for the goods")
+    package_type = st.selectbox("Package Type", package_types)
 with row4_col2:
-    billing_unit = st.selectbox("Billing Unit", billing_unit, help="Select the billing unit applicable")
+    billing_unit = st.selectbox("Billing Unit", billing_units)
 
-# Conditional Layout for Package Types
-if package_type == "Pallets":
-    col_a, col_b,col_c,col_d = st.columns(4)
-    with col_a:
-        num_pallets = st.number_input("Number of Pallets", min_value=1, step=1,
-                                      help="Enter total number of pallets")
-    with col_b:
-        pallet_type = st.selectbox("Type of Pallet", ["Standard", "Euro"],
-                                   help="Select pallet type")
-    with col_c:
-        expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1,
-                                         help="Expected storage space needed")
-    with col_d:
-        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"],
-                                  help="Select the unit for storage space")
-
-    cbm_per_pallet = 1.8 if pallet_type == "Standard" else 1.44
-    sqft_per_pallet = 13 if pallet_type == "Standard" else 10.03
-    total_cbm = cbm_per_pallet * num_pallets
-    total_sqft = sqft_per_pallet * num_pallets
-    st.info(f"Approx. Expected Space: **{total_cbm:.2f} CBM** or **{total_sqft:.2f} SQFT**")
-
-elif package_type == "Boxes":
-    col_a, col_b = st.columns(2)
-    with col_a:
-        expected_space = st.number_input("Expected Space for Boxes", min_value=0.0, step=0.1,
-                                         help="Expected storage space needed for boxes")
-    with col_b:
-        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"],
-                                  help="Select the unit for storage space")
-
-elif package_type == "Oversized/Overweight":
-    col_a, col_b = st.columns(2)
-    with col_a:
-        weight = st.number_input("Weight of Commodity", min_value=0.0, step=0.1,
-                                 help="Enter weight of the commodity in kilograms/ton")
-    with col_b:
-        weight_unit = st.selectbox("Weight Unit", ["KG", "TON"],
-                                   help="Select weight unit")
-
-    col_c, col_d = st.columns(2)
-    with col_c:
-        expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1,
-                                         help="Expected storage space needed")
-    with col_d:
-        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"],
-                                  help="Select the unit for storage space")
-
-elif package_type == "Container":
-    col_a, col_b, col_c, col_d = st.columns(4)
-    with col_a:
-        num_containers = st.number_input("Number of Containers", min_value=1, step=1,
-                                         help="Enter number of containers")
-    with col_b:
-        container_type = st.selectbox("Container Size", ["40ft", "20ft"],
-                                      help="Select container size")
-    with col_c:
-        expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1,
-                                         help="Expected storage space needed")
-    with col_d:
-        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"],
-                                  help="Select the unit for storage space")
-
-    cbm_per_container = 70 if container_type == "40ft" else 30
-    sqft_per_container = 130 if container_type == "40ft" else 65
-    total_cbm = cbm_per_container * num_containers
-    total_sqft = sqft_per_container * num_containers
-    st.info(f"Approx. Expected Space: **{total_cbm} CBM** or **{total_sqft} SQFT**")
-
-elif package_type == "Bags":
-    col_a, col_b = st.columns(2)
-    with col_a:
-        expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1,
-                                         help="Expected storage space needed")
-    with col_b:
-        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"],
-                                  help="Select the unit for storage space")
-
-# COO / Location of Shipment (Left) | Expected Start Date (Right)
-# COO / Location of Shipment and Expected Start Date (Stacked on Left)
-col_left, col_right = st.columns([1, 3])  # Left for fields, Right for spacing
+# COO and Expected Start Date
+col_left, col_right = st.columns([1, 3])
 with col_left:
-    shipment_location = st.selectbox("COO / Location of Shipment", coo_options,
-                                     help="Country of origin or location of shipment")
-    expected_start = st.date_input("Expected Start Date", min_value=date.today(),
-                                  help="Enter the expected start date for storage")
+    shipment_location = st.selectbox("COO / Location of Shipment", coo_options)
+    expected_start = st.date_input("Expected Start Date", min_value=date.today())
 
-# Upload Packing List
-packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf", "doc", "jpg", "png"],
-                               help="Upload packing list document")
+packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf","doc","jpg","png"])
 
 # ------------------- SECTION 3: Handling Requirements -------------------
 st.header("🟧 Section 3: Handling Requirements")
-
 col_1,col_2=st.columns(2)
 with col_1:
-    handling_in = st.selectbox("Handling In", ["Loose", "Pallets", "Not Required","Offloading"],
-                              help="Select how goods are handled on arrival")
+    handling_in = st.selectbox("Handling In", ["Loose","Pallets","Not Required","Offloading"])
 with col_2:
-    handling_out = st.selectbox("Handling Out", ["Loose", "Pallets", "Not Required", "Pieces","Loading","Boxes"],
-                               help="Select how goods are handled when dispatched")
+    handling_out = st.selectbox("Handling Out", ["Loose","Pallets","Not Required","Pieces","Loading","Boxes"])
 
-# Inventory Tracking Display
 if handling_out == "Pallets":
     st.info("Inventory will be tracked by: Pallets")
 elif handling_out == "Loose":
@@ -220,60 +105,69 @@ elif handling_out == "Pieces":
     st.info("Inventory will be tracked by: Pallets")
 
 # ------------------- SECTION 4: Detailed Handling Requirements -------------------
-if handling_out in ["Loose", "Palletised", "Pieces", "Boxes", "Loading"]:
+if handling_out in ["Loose","Palletised","Pieces","Boxes","Loading"]:
     st.header("🟥 Section 4: Detailed Handling Requirements")
-    sku_count = st.number_input("Number of SKUs", min_value=0, help="Enter the number of Stock Keeping Units (SKUs)")
-
-    if handling_out in ["Loose", "Palletised", "Pieces", "Boxes"]:
-        mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes", "No"])
-
-        if mixed_skus == "Yes":
-            # Show the checkbox as checked and disabled (mandatory)
-            st.checkbox("Segregation Required", value=True, disabled=True,
-                        help="Segregation is required due to mixed SKUs")
-
-    tracking_method = st.selectbox("How is Inventory Tracking Maintained?", ["Lot Number", "Expiry Date", "SKU Value"],
-                                   help="Select inventory tracking method")
+    sku_count = st.number_input("Number of SKUs", min_value=0)
+    mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes","No"])
+    if mixed_skus == "Yes":
+        st.checkbox("Segregation Required", value=True, disabled=True)
+    tracking_method = st.selectbox("How is Inventory Tracking Maintained?", ["Lot Number","Expiry Date","SKU Value"])
 
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
-documents = st.file_uploader("Upload Documents (Photo ID, Trade License, Emirates ID, VAT)", accept_multiple_files=True,
-                            help="Required Documents:\n1. Emirates ID\n2. VAT Certificate\n3. Trade License")
+documents = st.file_uploader("Upload Documents", accept_multiple_files=True)
 
-# ------------------- Submit -------------------
+# ------------------- Save to Excel -------------------
+def save_to_excel(summary, file_path="storage_leads.xlsx"):
+    company_sheet = summary["Company Name"].replace(" ", "_")
+    df = pd.DataFrame([summary])
+
+    if os.path.exists(file_path):
+        with pd.ExcelWriter(file_path, engine="openpyxl", mode="a") as writer:
+            writer.book = load_workbook(file_path)
+            if company_sheet in writer.book.sheetnames:
+                start_row = writer.book[company_sheet].max_row
+                df.to_excel(writer, sheet_name=company_sheet, startrow=start_row, header=False, index=False)
+            else:
+                df.to_excel(writer, sheet_name=company_sheet, index=False)
+    else:
+        with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
+            df.to_excel(writer, sheet_name=company_sheet, index=False)
+    return file_path
+
+# ------------------- Submit Button -------------------
 if st.button("Submit Form"):
-    st.success("✅ Form submitted successfully!")
+    segregation_required = "Yes" if mixed_skus == "Yes" else "No"
 
-    # Determine Segregation Requirement
-    segregation_required = "Yes" if 'mixed_skus' in locals() and mixed_skus == "Yes" else "No"
-
-    # Prepare summary of inputs
     summary = {
-        "Company Name": "Autofetched Co.",
-        "Point of Contact": "John Doe",
-        "Email": "john@autofetched.com",
-        "Phone": "+971500000000",
-        "Storage Location": storage_location,
+        "Company Name": company_name,
+        "Point of Contact": contact_person,
+        "Email": email,
+        "Phone": phone,
+        "Storage Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
         "Commodity": commodity,
-        "MSDS Uploaded": "Yes" if commodity_type == "DG" and msds_file else "No",
+        "MSDS Uploaded": "Yes" if commodity_type=="DG" and msds_file else "No",
         "Storage Type": storage_type,
         "Required Temperature (°C)": required_temperature if required_temperature else "N/A",
         "Package Type": package_type,
         "Billing Unit": billing_unit,
-        "Expected Space": expected_space if 'expected_space' in locals() else "N/A",
         "Shipment Location": shipment_location,
         "Expected Start Date": expected_start.strftime("%Y-%m-%d"),
         "Handling In": handling_in,
         "Handling Out": handling_out,
         "Number of SKUs": sku_count if 'sku_count' in locals() else "N/A",
-        "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
+        "Mixed SKUs": mixed_skus,
         "Segregation Required": segregation_required,
-        "Tracking Method": tracking_method if 'tracking_method' in locals() else "N/A",
+        "Tracking Method": tracking_method,
         "Packing List Uploaded": "Yes" if packing_list else "No",
         "Documents Uploaded": len(documents) if documents else 0
     }
 
-    # Display summary in a neat format
+    st.success("✅ Form submitted successfully!")
     st.subheader("📋 Summary of Inputs")
-    st.json(summary)  # Displays as formatted JSON
+    st.json(summary)
+
+    file_path = save_to_excel(summary)
+    with open(file_path, "rb") as f:
+        st.download_button("📥 Download Excel", f, file_name="storage_leads.xlsx")
