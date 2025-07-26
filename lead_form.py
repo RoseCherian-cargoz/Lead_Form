@@ -55,28 +55,28 @@ storage_location = st.selectbox("Storage Location", locations)
 # Row 2: Commodity Type (Left) | Commodity (Right)
 row2_col1, row2_col2 = st.columns(2)
 
-# --- COMMODITY TYPE (Left Column) ---
 with row2_col1:
-    highlight_style = """
-    <style>
-    .highlight-selectbox > div[data-testid="stSelectbox"] {
-        background-color: #ffe6e6;
-        border: 2px solid red;
-        border-radius: 8px;
-        padding: 5px;
-    }
-    </style>
-    """
+    # Detect current value or fallback
+    selected_type = st.session_state.get("commodity_type", commodity_types[0])
 
-    if commodity_type := st.session_state.get("commodity_type", "Non-DG") == "DG":
-        st.markdown(highlight_style, unsafe_allow_html=True)
-        st.markdown('<div class="highlight-selectbox">', unsafe_allow_html=True)
+    # Dynamically wrap the selectbox with red styling only if DG is selected
+    if selected_type == "DG":
+        st.markdown("""
+            <style>
+            .custom-selectbox > div[data-testid="stSelectbox"] {
+                background-color: #ffe6e6;
+                border: 2px solid red;
+                border-radius: 8px;
+                padding: 5px;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+        st.markdown('<div class="custom-selectbox">', unsafe_allow_html=True)
     else:
         st.markdown('<div>', unsafe_allow_html=True)
 
     commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type")
     st.markdown('</div>', unsafe_allow_html=True)
-
 # --- COMMODITY INPUT (Right Column) ---
 with row2_col2:
     commodity = st.text_input("Commodity", key="commodity_text_input")
