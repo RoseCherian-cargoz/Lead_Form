@@ -244,15 +244,16 @@ documents = st.file_uploader("Upload Documents (Photo ID, Trade License, Emirate
 if st.button("Submit Form"):
     st.success("✅ Form submitted successfully!")
 
+    # Determine Segregation Requirement
     segregation_required = "Yes" if 'mixed_skus' in locals() and mixed_skus == "Yes" else "No"
 
-    # Prepare summary
+    # Prepare summary of inputs
     summary = {
         "Company Name": "Autofetched Co.",
         "Point of Contact": "John Doe",
         "Email": "john@autofetched.com",
         "Phone": "+971500000000",
-        "Storage Location(s)": ", ".join(storage_location),
+        "Storage Location": storage_location,
         "Commodity Type": commodity_type,
         "Commodity": commodity,
         "MSDS Uploaded": "Yes" if commodity_type == "DG" and msds_file else "No",
@@ -273,18 +274,10 @@ if st.button("Submit Form"):
         "Documents Uploaded": len(documents) if documents else 0
     }
 
-    # Generate HTML table
-    html = "<div style='padding:10px;'><table style='width:100%; border-collapse:collapse;'>"
-    for key, value in summary.items():
-        html += f"""
-        <tr>
-            <td style='padding:8px; font-weight:bold; color:#444; border-bottom:1px solid #ddd;'>{key}</td>
-            <td style='padding:8px; color:#222; border-bottom:1px solid #ddd;'>{value}</td>
-        </tr>
-        """
-    html += "</table></div>"
+    # Display summary in a neat format
+    st.subheader("📋 Summary of Inputs")
+    st.json(summary)  # Displays as formatted JSON
 
-    st.markdown(html, unsafe_allow_html=True)
 
 from xhtml2pdf import pisa
 import io
