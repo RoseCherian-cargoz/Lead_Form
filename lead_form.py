@@ -241,5 +241,36 @@ documents = st.file_uploader("Upload Documents (Photo ID, Trade License, Emirate
                             help="Upload multiple documents for verification")
 
 # ------------------- Submit -------------------
+# ------------------- Submit -------------------
 if st.button("Submit Form"):
     st.success("✅ Form submitted successfully!")
+
+    # Prepare summary of inputs
+    summary = {
+        "Company Name": "Autofetched Co.",
+        "Point of Contact": "John Doe",
+        "Email": "john@autofetched.com",
+        "Phone": "+971500000000",
+        "Storage Location": storage_location,
+        "Commodity Type": commodity_type,
+        "Commodity": commodity,
+        "MSDS Uploaded": "Yes" if commodity_type == "DG" and msds_file else "No",
+        "Storage Type": storage_type,
+        "Required Temperature (°C)": required_temperature if required_temperature else "N/A",
+        "Package Type": package_type,
+        "Billing Unit": billing_unit,
+        "Expected Space": expected_space if 'expected_space' in locals() else "N/A",
+        "Shipment Location": shipment_location,
+        "Expected Start Date": expected_start.strftime("%Y-%m-%d"),
+        "Handling In": handling_in,
+        "Handling Out": handling_out,
+        "Number of SKUs": sku_count if 'sku_count' in locals() else "N/A",
+        "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
+        "Tracking Method": tracking_method if 'tracking_method' in locals() else "N/A",
+        "Packing List Uploaded": "Yes" if packing_list else "No",
+        "Documents Uploaded": len(documents) if documents else 0
+    }
+
+    # Display summary in a neat format
+    st.subheader("📋 Summary of Inputs")
+    st.json(summary)  # Displays as formatted JSON
