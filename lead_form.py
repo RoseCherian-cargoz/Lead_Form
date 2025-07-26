@@ -119,20 +119,19 @@ documents = st.file_uploader("Upload Documents", accept_multiple_files=True)
 
 # ------------------- Save to Excel -------------------
 def save_to_excel(summary, file_path="storage_leads.xlsx"):
-    company_sheet = summary["Company Name"].replace(" ", "_")
     df = pd.DataFrame([summary])
+    sheet_name = "Leads"
 
     if os.path.exists(file_path):
-        with pd.ExcelWriter(file_path, engine="openpyxl", mode="a") as writer:
-            writer.book = load_workbook(file_path)
-            if company_sheet in writer.book.sheetnames:
-                start_row = writer.book[company_sheet].max_row
-                df.to_excel(writer, sheet_name=company_sheet, startrow=start_row, header=False, index=False)
-            else:
-                df.to_excel(writer, sheet_name=company_sheet, index=False)
+        # Load existing Excel file
+        with pd.ExcelWriter(file_path, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:
+            start_row = writer.sheets[sheet_name].max_row
+            df.to_excel(writer, sheet_name=sheet_name, index=False, header=False, startrow=start_row)
     else:
+        # Create a new Excel file with header
         with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
-            df.to_excel(writer, sheet_name=company_sheet, index=False)
+            df.to_excel(writer, sheet_name=sheet_name, index=False)
+
     return file_path
 
 # ------------------- Submit Button -------------------
