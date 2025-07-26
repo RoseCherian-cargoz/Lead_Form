@@ -85,11 +85,15 @@ with row4_col2:
 
 # Conditional Layout for Package Types
 if package_type == "Pallets":
-    col_a, col_b = st.columns(2)
+    col_a, col_b,col_c,col_d = st.columns(4)
     with col_a:
         num_pallets = st.number_input("Number of Pallets", min_value=1, step=1)
     with col_b:
         pallet_type = st.selectbox("Type of Pallet", ["Standard", "Euro"])
+    with col_c:
+        expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1)
+    with col_d:
+        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"])
 
     cbm_per_pallet = 1.8 if pallet_type == "Standard" else 1.44
     sqft_per_pallet = 13 if pallet_type == "Standard" else 10.03
@@ -102,7 +106,7 @@ elif package_type == "Boxes":
     with col_a:
         expected_space = st.number_input("Expected Space for Boxes", min_value=0.0, step=0.1)
     with col_b:
-        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT"])
+        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"])
 
 elif package_type == "Oversized/Overweight":
     col_a, col_b = st.columns(2)
@@ -115,14 +119,18 @@ elif package_type == "Oversized/Overweight":
     with col_c:
         expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1)
     with col_d:
-        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT"])
+        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"])
 
 elif package_type == "Container":
-    col_a, col_b = st.columns(2)
+    col_a, col_b, col_c, col_d = st.columns(4)
     with col_a:
         num_containers = st.number_input("Number of Containers", min_value=1, step=1)
     with col_b:
         container_type = st.selectbox("Container Size", ["40ft", "20ft"])
+    with col_c:
+        expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1)
+    with col_d:
+        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"])
 
     cbm_per_container = 70 if container_type == "40ft" else 30
     sqft_per_container = 130 if container_type == "40ft" else 65
@@ -135,7 +143,7 @@ elif package_type == "Bags":
     with col_a:
         expected_space = st.number_input("Expected Space", min_value=0.0, step=0.1)
     with col_b:
-        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT"])
+        space_unit = st.selectbox("Select Unit", ["CBM", "SQFT","per Pallet","Fixed Unit"])
 
 # COO / Location of Shipment (Left) | Expected Start Date (Right)
 # COO / Location of Shipment and Expected Start Date (Stacked on Left)
