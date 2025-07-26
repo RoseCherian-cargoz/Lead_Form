@@ -10,12 +10,12 @@ st.header("🟩 Section 1: Contact Details (Auto-Fetched)")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.text_input("Company Name", value="Autofetched Co.", disabled=True, help="Company auto-fetched from CRM")
-    st.text_input("Point of Contact", value="John Doe", disabled=True, help="Contact person for this lead")
+    st.text_input("Company Name", value="Autofetched Co.", disabled=True, help="Company name fetched from the landing page")
+    st.text_input("Point of Contact", value="John Doe", disabled=True, help="Contact person for this lead-details fetched from landing page")
 
 with col2:
-    st.text_input("Email", value="john@autofetched.com", disabled=True, help="Email address of the contact")
-    st.text_input("Phone", value="+971500000000", disabled=True, help="Phone number of the contact")
+    st.text_input("Email", value="john@autofetched.com", disabled=True, help="Email address of the contact-details fetched from landing page")
+    st.text_input("Phone", value="+971500000000", disabled=True, help="Phone number of the contact-details fetched from landing page")
 
 # ------------------- SECTION 2: Storage Details -------------------
 st.header("🟦 Section 2: Storage Details")
@@ -38,7 +38,7 @@ billing_unit = ["CBM", "SQFT", "SQM", "Per Pallet", "Fixed Unit"]
 coo_options = ["Mainland", "Freezone", "On the way to UAE", "Another Warehouse"]
 
 # Row 1: Storage Location (Full Width)
-storage_location = st.selectbox("Storage Location", locations, help="Select the storage location for the goods")
+storage_location = st.multiselect("Storage Location", locations, help="Select the storage location/locations for the goods prefered by the lead")
 
 # DG Highlight + MSDS Upload
 # Row 2: Commodity Type (Left) | Commodity (Right)
@@ -95,7 +95,7 @@ if commodity_type == "DG":
 # Row 3: Storage Type (Left) | Required Temperature (Right if needed)
 row3_col1, row3_col2 = st.columns(2)
 with row3_col1:
-    storage_type = st.selectbox("Storage Type", storage_types, help="Choose the type of storage required")
+    storage_type = st.selectbox("Storage Type", storage_types, help="Choose the type of enviroment required for the goods")
 with row3_col2:
     required_temperature = None
     if storage_type in ["Frozen", "Chilled Storage"]:
@@ -143,8 +143,8 @@ elif package_type == "Boxes":
 elif package_type == "Oversized/Overweight":
     col_a, col_b = st.columns(2)
     with col_a:
-        weight = st.number_input("Weight of Commodity (in KG)", min_value=0.0, step=0.1,
-                                 help="Enter weight of the commodity in kilograms")
+        weight = st.number_input("Weight of Commodity", min_value=0.0, step=0.1,
+                                 help="Enter weight of the commodity in kilograms/ton")
     with col_b:
         weight_unit = st.selectbox("Weight Unit", ["KG", "TON"],
                                    help="Select weight unit")
@@ -194,7 +194,7 @@ with col_left:
     shipment_location = st.selectbox("COO / Location of Shipment", coo_options,
                                      help="Country of origin or location of shipment")
     expected_start = st.date_input("Expected Start Date", min_value=date.today(),
-                                  help="Select the expected start date for storage")
+                                  help="Enter the expected start date for storage")
 
 # Upload Packing List
 packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf", "doc", "jpg", "png"],
@@ -225,8 +225,7 @@ if handling_out in ["Loose", "Palletised", "Pieces", "Boxes", "Loading"]:
     sku_count = st.number_input("Number of SKUs", min_value=0, help="Enter the number of Stock Keeping Units (SKUs)")
 
     if handling_out in ["Loose", "Palletised", "Pieces", "Boxes"]:
-        mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes", "No"],
-                                  help="Are different SKUs mixed within the pallets?")
+        mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes", "No"])
 
         if mixed_skus == "Yes":
             # Show the checkbox as checked and disabled (mandatory)
