@@ -118,7 +118,7 @@ st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents", accept_multiple_files=True)
 
 # ------------------- Save to Excel -------------------
-def save_to_excel(summary, file_path="storage_leads.xlsx", sheet_name="Sheet1"):
+def save_to_excel(summary, file_path="Lead Requirement Form.xlsx", sheet_name="Sheet1"):
     df = pd.DataFrame([summary])
 
     if os.path.exists(file_path):
