@@ -238,7 +238,7 @@ if handling_out in ["Loose", "Palletised", "Pieces", "Boxes", "Loading"]:
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents (Photo ID, Trade License, Emirates ID, VAT)", accept_multiple_files=True,
-                            help="Upload multiple documents for verification")
+                            help="Required Documents:\n1. Emirates ID\n2. VAT Certificate\n3. Trade License")
 
 # ------------------- Submit -------------------
 # ------------------- Submit -------------------
