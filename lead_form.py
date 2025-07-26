@@ -164,11 +164,12 @@ def append_to_google_sheet(data: dict):
     body = {'values': values}
     result = sheet.values().append(
         spreadsheetId=SPREADSHEET_ID,
-        range=f'{SHEET_NAME}!A1',
+        range=SHEET_NAME,  # only sheet name, no cell address
         valueInputOption='RAW',
         insertDataOption='INSERT_ROWS',
         body=body
     ).execute()
+
     return result
 
 
