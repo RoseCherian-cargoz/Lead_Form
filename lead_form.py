@@ -136,41 +136,66 @@ service = build('sheets', 'v4', credentials=credentials)
 
 def append_to_google_sheet(data: dict):
     sheet = service.spreadsheets()
-    # Order fields exactly as your Google Sheet columns
-    values = [[
-        data["Company Name"],
-        data["Point of Contact"],
-        data["Email"],
-        data["Phone"],
-        data["Storage Location"],
-        data["Commodity Type"],
-        data["Commodity"],
-        data["MSDS Uploaded"],
-        data["Storage Type"],
-        data["Required Temperature (°C)"],
-        data["Package Type"],
-        data["Billing Unit"],
-        data["Shipment Location"],
-        data["Expected Start Date"],
-        data["Handling In"],
-        data["Handling Out"],
-        data["Number of SKUs"],
-        data["Mixed SKUs"],
-        data["Segregation Required"],
-        data["Tracking Method"],
-        data["Packing List Uploaded"],
-        data["Documents Uploaded"]
-    ]]
-    body = {'values': values}
-    result = sheet.values().append(
+
+    # Define the header row (field names exactly as your sheet columns)
+    header = [
+        "Company Name",
+        "Point of Contact",
+        "Email",
+        "Phone",
+        "Storage Location",
+        "Commodity Type",
+        "Commodity",
+        "MSDS Uploaded",
+        "Storage Type",
+        "Required Temperature (°C)",
+        "Package Type",
+        "Billing Unit",
+        "Shipment Location",
+        "Expected Start Date",
+        "Handling In",
+        "Handling Out",
+        "Number of SKUs",
+        "Mixed SKUs",
+        "Segregation Required",
+        "Tracking Method",
+        "Packing List Uploaded",
+        "Documents Uploaded"
+    ]
+
+    # First, read the first row to check if header exists
+    result = sheet.values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range=SHEET_NAME,  # only sheet name, no cell address
+        range=f"{SHEET_NAME}!1:1"
+    ).execute()
+
+    existing_header = result.get('values', [])
+
+    # If header row is empty, write it
+    if not existing_header:
+        sheet.values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range=f"{SHEET_NAME}!1:1",
+            valueInputOption='RAW',
+            body={'values': [header]}
+        ).execute()
+
+    # Prepare data row values in the same order as header
+    values = [[
+        data.get(field, "") for field in header
+    ]]
+
+    # Append data below header row
+    body = {'values': values}
+    append_result = sheet.values().append(
+        spreadsheetId=SPREADSHEET_ID,
+        range=f"{SHEET_NAME}!A2",  # start appending from second row
         valueInputOption='RAW',
         insertDataOption='INSERT_ROWS',
         body=body
     ).execute()
 
-    return result
+    return append_result
 
 
 # ------------------- Submit Button -------------------
