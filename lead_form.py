@@ -122,7 +122,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 # Constants
-SERVICE_ACCOUNT_FILE = '"C:\Users\rose\Downloads\lead-form-467108-9259f04dba08.json"'  # update this path
+SERVICE_ACCOUNT_FILE = 'C:\Users\rose\Downloads\lead-form-467108-9259f04dba08.json'  # update this path
 SPREADSHEET_ID = 'https://docs.google.com/spreadsheets/d/1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8/edit?gid=0#gid=0'  # from the sheet URL
 SHEET_NAME = 'Lead Requirements Sheet'  # or your sheet tab name
 
