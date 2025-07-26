@@ -3,7 +3,7 @@ from datetime import date
 
 st.set_page_config(page_title="Storage Requirement Form", layout="centered")
 
-st.title("📦 Storage Requirement Form")
+st.title("📦 Lead Form")
 # ------------------- SECTION 1: Contact Details -------------------
 st.header("🟩 Section 1: Contact Details (Auto-Fetched)")
 
@@ -143,7 +143,6 @@ col_left, col_right = st.columns([1, 3])  # Left for fields, Right for spacing
 with col_left:
     shipment_location = st.selectbox("COO / Location of Shipment", coo_options)
     expected_start = st.date_input("Expected Start Date", min_value=date.today())
-
 
 # Upload Packing List
 packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf", "doc", "jpg", "png"])
