@@ -56,9 +56,6 @@ with row2_col2:
 row2_col1, row2_col2 = st.columns(2)
 
 with row2_col1:
-    # Open wrapper before selectbox
-    st.markdown('<div id="commodity-type-container">', unsafe_allow_html=True)
-    commodity_type = st.selectbox("Commodity Type", ["Normal", "DG"], key="commodity_type")
     # Close wrapper after selectbox
     st.markdown('</div>', unsafe_allow_html=True)
 
