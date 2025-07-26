@@ -277,17 +277,3 @@ if st.button("Submit Form"):
     # Display summary in a neat format
     st.subheader("📋 Summary of Inputs")
     st.json(summary)  # Displays as formatted JSON
-
-
-from xhtml2pdf import pisa
-import io
-
-if st.button("Download as PDF"):
-    pdf_buffer = io.BytesIO()
-    pisa.CreatePDF(html, dest=pdf_buffer)
-    st.download_button(
-        label="📄 Download Summary as PDF",
-        data=pdf_buffer.getvalue(),
-        file_name="storage_summary.pdf",
-        mime="application/pdf"
-    )
