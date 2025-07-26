@@ -15,16 +15,17 @@ st.header("🟩 Section 1: Contact Details (Auto-Fetched)")
 col1, col2 = st.columns(2)
 
 with col1:
-    company_name = st.text_input("Company Name", value="Autofetched Co.", disabled=True,
-                                  help="Company name fetched from the landing page")
-    contact_person = st.text_input("Point of Contact", value="John Doe", disabled=True,
-                                    help="Contact person for this lead-details fetched from landing page")
+    company_name = st.text_input("Company Name", value="", placeholder="Enter company name",
+                                help="Company name fetched from the landing page")
+    contact_person = st.text_input("Point of Contact", value="", placeholder="Enter contact person name",
+                                  help="Contact person for this lead-details fetched from landing page")
 
 with col2:
-    email = st.text_input("Email", value="john@autofetched.com", disabled=True,
-                           help="Email address of the contact-details fetched from landing page")
-    phone = st.text_input("Phone", value="+971500000000", disabled=True,
-                           help="Phone number of the contact-details fetched from landing page")
+    email = st.text_input("Email", value="", placeholder="Enter email address",
+                         help="Email address of the contact-details fetched from landing page")
+    phone = st.text_input("Phone", value="", placeholder="Enter phone number",
+                         help="Phone number of the contact-details fetched from landing page")
+
 
 # ------------------- SECTION 2: Storage Details -------------------
 st.header("🟦 Section 2: Storage Details")
