@@ -121,14 +121,16 @@ documents = st.file_uploader("Upload Documents", accept_multiple_files=True)
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-SERVICE_ACCOUNT_FILE = 'C:/Users/rose/Downloads/lead-form-467108-9259f04dba08.json'
-SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
-SHEET_NAME = 'Lead Requirements Sheet'  # exact name of the sheet tab
+# SERVICE_ACCOUNT_FILE = 'C:/Users/rose/Downloads/lead-form-467108-9259f04dba08.json'
+# SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
+# SHEET_NAME = 'Lead Requirements Sheet'  # exact name of the sheet tab
+# credentials = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
 
 # Authenticate Google Sheets API client
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-credentials = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+# credentials = service_account.Credentials.from_service_account_file(
+    # SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+credentials = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
 
 service = build('sheets', 'v4', credentials=credentials)
 
