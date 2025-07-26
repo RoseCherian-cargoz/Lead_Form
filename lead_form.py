@@ -120,21 +120,23 @@ documents = st.file_uploader("Upload Documents", accept_multiple_files=True)
 # ------------------- Save to Excel -------------------
 def save_to_excel(summary, file_path="storage_leads.xlsx", sheet_name="Sheet1"):
     df = pd.DataFrame([summary])
-    
+
     if os.path.exists(file_path):
         book = load_workbook(file_path)
+        if sheet_name in book.sheetnames:
+            startrow = book[sheet_name].max_row
+        else:
+            startrow = 0
+
         with pd.ExcelWriter(file_path, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:
-            writer.book = book
-            if sheet_name in writer.book.sheetnames:
-                startrow = writer.book[sheet_name].max_row
-                df.to_excel(writer, sheet_name=sheet_name, startrow=startrow, header=False, index=False)
-            else:
-                df.to_excel(writer, sheet_name=sheet_name, index=False)
+            # Don't assign writer.book here, just write with startrow
+            df.to_excel(writer, sheet_name=sheet_name, startrow=startrow, header=False, index=False)
     else:
         with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
             df.to_excel(writer, sheet_name=sheet_name, index=False)
-    
+
     return file_path
+
 
 
 # ------------------- Submit Button -------------------
