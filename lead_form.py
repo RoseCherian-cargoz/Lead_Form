@@ -56,32 +56,27 @@ storage_location = st.selectbox("Storage Location", locations)
 row2_col1, row2_col2 = st.columns(2)
 
 with row2_col1:
-    # Open wrapper before selectbox
-    st.markdown('<div id="commodity-type-container">', unsafe_allow_html=True)
-    commodity_type = st.selectbox("Commodity Type", ["Normal", "DG"], key="commodity_type")
-    # Close wrapper after selectbox
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Use a container and assign a unique key to the selectbox
+    commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type")
 
 with row2_col2:
-    commodity = st.text_input("Commodity")
+    commodity = st.text_input("Commodity", key="commodity_text_input")
 
-# Apply conditional styling
 if commodity_type == "DG":
     st.markdown(
         """
         <style>
-        /* Only style inside #commodity-type-container */
-        #commodity-type-container [data-baseweb="select"] {
+        /* Use Streamlit's internal unique class for the specific selectbox */
+        div.stSelectbox > div[data-baseweb="select"] {
             background-color: #ff0000 !important;
             border: 2px solid red !important;
-            border-radius: 8px;
+            border-radius: 8px !important;
         }
-
-        #commodity-type-container [data-baseweb="select"] span {
+        div.stSelectbox > div[data-baseweb="select"] span {
             color: white !important;
         }
 
-        /* MSDS section */
+        /* MSDS section styling */
         .msds-section {
             background-color: #ffe6e6;
             padding: 1rem;
@@ -91,15 +86,17 @@ if commodity_type == "DG":
         }
         </style>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
-    # MSDS Upload section
     st.markdown('<div class="msds-section">', unsafe_allow_html=True)
     st.subheader("📄 MSDS (Material Safety Data Sheet)")
     st.info("⚠️ DG selected: Please upload the MSDS document for safety compliance.")
-    msds_file = st.file_uploader("Upload MSDS Document", type=["pdf", "docx", "jpg", "png"])
-    st.markdown('</div>', unsafe_allow_html=True)
+    msds_file = st.file_uploader(
+        "Upload MSDS Document", type=["pdf", "docx", "jpg", "png"], key="msds_uploader"
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+Explanation:
 
 
 # Row 3: Storage Type (Left) | Required Temperature (Right if needed)
