@@ -118,25 +118,57 @@ st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents", accept_multiple_files=True)
 
 # ------------------- Save to Excel -------------------
-def save_to_excel(summary, file_path="Lead Requirement Form.xlsx", sheet_name="Sheet1"):
-    df = pd.DataFrame([summary])
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
-    if os.path.exists(file_path):
-        book = load_workbook(file_path)
-        if sheet_name in book.sheetnames:
-            startrow = book[sheet_name].max_row
-        else:
-            startrow = 0
+# Constants
+SERVICE_ACCOUNT_FILE = '"C:\Users\rose\Downloads\lead-form-467108-9259f04dba08.json"'  # update this path
+SPREADSHEET_ID = 'https://docs.google.com/spreadsheets/d/1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8/edit?gid=0#gid=0'  # from the sheet URL
+SHEET_NAME = 'Lead Requirements Sheet'  # or your sheet tab name
 
-        with pd.ExcelWriter(file_path, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:
-            # Don't assign writer.book here, just write with startrow
-            df.to_excel(writer, sheet_name=sheet_name, startrow=startrow, header=False, index=False)
-    else:
-        with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
-            df.to_excel(writer, sheet_name=sheet_name, index=False)
+# Authenticate Google Sheets API client
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+credentials = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
-    return file_path
+service = build('sheets', 'v4', credentials=credentials)
 
+def append_to_google_sheet(data: dict):
+    sheet = service.spreadsheets()
+    # Order fields exactly as your Google Sheet columns
+    values = [[
+        data["Company Name"],
+        data["Point of Contact"],
+        data["Email"],
+        data["Phone"],
+        data["Storage Location"],
+        data["Commodity Type"],
+        data["Commodity"],
+        data["MSDS Uploaded"],
+        data["Storage Type"],
+        data["Required Temperature (°C)"],
+        data["Package Type"],
+        data["Billing Unit"],
+        data["Shipment Location"],
+        data["Expected Start Date"],
+        data["Handling In"],
+        data["Handling Out"],
+        data["Number of SKUs"],
+        data["Mixed SKUs"],
+        data["Segregation Required"],
+        data["Tracking Method"],
+        data["Packing List Uploaded"],
+        data["Documents Uploaded"]
+    ]]
+    body = {'values': values}
+    result = sheet.values().append(
+        spreadsheetId=SPREADSHEET_ID,
+        range=f'{SHEET_NAME}!A1',
+        valueInputOption='RAW',
+        insertDataOption='INSERT_ROWS',
+        body=body
+    ).execute()
+    return result
 
 
 # ------------------- Submit Button -------------------
@@ -168,10 +200,8 @@ if st.button("Submit Form"):
         "Documents Uploaded": len(documents) if documents else 0
     }
 
-    st.success("✅ Form submitted successfully!")
-    st.subheader("📋 Summary of Inputs")
-    st.json(summary)
+    # Append data to Google Sheet
+    append_result = append_to_google_sheet(summary)
 
-    file_path = save_to_excel(summary)
-    with open(file_path, "rb") as f:
-        st.download_button("📥 Download Excel", f, file_name="storage_leads.xlsx")
+    st.success("✅ Form submitted successfully and data saved to Google Sheets!")
+    st.json(summary)
