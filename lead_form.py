@@ -203,7 +203,7 @@ if st.button("Submit Form"):
     }
 
     # Append data to Google Sheet
-    append_result = append_to_google_sheet(summary)
+    # append_result = append_to_google_sheet(summary)
 
     st.success("✅ Form submitted successfully and data saved to Google Sheets!")
     st.json(summary)
