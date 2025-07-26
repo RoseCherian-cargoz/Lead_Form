@@ -77,9 +77,9 @@ with row2_col1:
         commodity_type = st.selectbox("Commodity Type", commodity_types, key="commodity_type")
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- COMMODITY INPUT (Right Column) ---
-with row2_col2:
-    commodity = st.text_input("Commodity", key="commodity_text_input")
+# # --- COMMODITY INPUT (Right Column) ---
+# with row2_col2:
+#     commodity = st.text_input("Commodity", key="commodity_text_input")
 
 # --- DG-SPECIFIC FIELDS ---
 if commodity_type == "DG":
@@ -105,7 +105,7 @@ if commodity_type == "DG":
         "Upload MSDS Document", type=["pdf", "docx", "jpg", "png"], key="msds_uploader"
     )
 # with row2_col2:
-    # commodity = st.text_input("Commodity", key="commodity_text_input")
+    commodity = st.text_input("Commodity", key="commodity_text_input")
 
 # Row 3: Storage Type (Left) | Required Temperature (Right if needed)
 row3_col1, row3_col2 = st.columns(2)
