@@ -52,12 +52,16 @@ if commodity_type == "DG":
     st.markdown(
         """
         <style>
-        div[data-testid="stSelectbox"][data-key="commodity_type"] > div > div > div {
+        /* Target selectbox container */
+        div[data-baseweb="select"] {
             background-color: #ff0000 !important;
             border: 2px solid red !important;
             border-radius: 8px;
+        }
+
+        /* Target text inside selectbox */
+        div[data-baseweb="select"] span {
             color: white !important;
-            padding: 0.3rem 0.5rem;
         }
         </style>
         """,
