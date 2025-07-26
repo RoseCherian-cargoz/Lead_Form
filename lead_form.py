@@ -96,7 +96,7 @@ if commodity_type == "DG":
         "Upload MSDS Document", type=["pdf", "docx", "jpg", "png"], key="msds_uploader"
     )
     st.markdown("</div>", unsafe_allow_html=True)
-Explanation:
+
 
 
 # Row 3: Storage Type (Left) | Required Temperature (Right if needed)
