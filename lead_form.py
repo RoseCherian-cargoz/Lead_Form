@@ -285,3 +285,17 @@ if st.button("Submit Form"):
     html += "</table></div>"
 
     st.markdown(html, unsafe_allow_html=True)
+
+import pdfkit
+import tempfile
+from pathlib import Path
+
+if st.button("Download as PDF"):
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+        pdfkit.from_string(html, tmp_file.name)
+        st.download_button(
+            label="📄 Download Summary as PDF",
+            data=open(tmp_file.name, "rb").read(),
+            file_name="storage_summary.pdf",
+            mime="application/pdf"
+        )
