@@ -105,7 +105,7 @@ if commodity_type == "DG":
     msds_file = st.file_uploader(
         "Upload MSDS Document", type=["pdf", "docx", "jpg", "png"], key="msds_uploader"
     )
-with row2_col2:
+# with row2_col2:
     # commodity = st.text_input("Commodity", key="commodity_text_input")
 
 # Row 3: Storage Type (Left) | Required Temperature (Right if needed)
