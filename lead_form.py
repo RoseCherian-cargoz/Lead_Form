@@ -245,6 +245,9 @@ documents = st.file_uploader("Upload Documents (Photo ID, Trade License, Emirate
 if st.button("Submit Form"):
     st.success("✅ Form submitted successfully!")
 
+    # Determine Segregation Requirement
+    segregation_required = "Yes" if 'mixed_skus' in locals() and mixed_skus == "Yes" else "No"
+
     # Prepare summary of inputs
     summary = {
         "Company Name": "Autofetched Co.",
@@ -266,6 +269,7 @@ if st.button("Submit Form"):
         "Handling Out": handling_out,
         "Number of SKUs": sku_count if 'sku_count' in locals() else "N/A",
         "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
+        "Segregation Required": segregation_required,
         "Tracking Method": tracking_method if 'tracking_method' in locals() else "N/A",
         "Packing List Uploaded": "Yes" if packing_list else "No",
         "Documents Uploaded": len(documents) if documents else 0
