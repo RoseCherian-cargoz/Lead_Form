@@ -118,59 +118,59 @@ st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents", accept_multiple_files=True)
 
 # ------------------- Save to Excel -------------------
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
+# from google.oauth2 import service_account
+# from googleapiclient.discovery import build
 
-SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
-SHEET_NAME = 'Lead Requirements Sheet'  # exact name of the sheet tab
+# SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
+# SHEET_NAME = 'Lead Requirements Sheet'  # exact name of the sheet tab
 
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+# SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-# Use service account info from Streamlit secrets to create credentials
-credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"],
-    scopes=SCOPES
-)
+# # Use service account info from Streamlit secrets to create credentials
+# credentials = service_account.Credentials.from_service_account_info(
+#     st.secrets["gcp_service_account"],
+#     scopes=SCOPES
+# )
 
-service = build('sheets', 'v4', credentials=credentials)
+# service = build('sheets', 'v4', credentials=credentials)
 
-def append_to_google_sheet(data: dict):
-    sheet = service.spreadsheets()
-    # Order fields exactly as your Google Sheet columns
-    values = [[
-        data["Company Name"],
-        data["Point of Contact"],
-        data["Email"],
-        data["Phone"],
-        data["Storage Location"],
-        data["Commodity Type"],
-        data["Commodity"],
-        data["MSDS Uploaded"],
-        data["Storage Type"],
-        data["Required Temperature (°C)"],
-        data["Package Type"],
-        data["Billing Unit"],
-        data["Shipment Location"],
-        data["Expected Start Date"],
-        data["Handling In"],
-        data["Handling Out"],
-        data["Number of SKUs"],
-        data["Mixed SKUs"],
-        data["Segregation Required"],
-        data["Tracking Method"],
-        data["Packing List Uploaded"],
-        data["Documents Uploaded"]
-    ]]
-    body = {'values': values}
-    result = sheet.values().append(
-        spreadsheetId=SPREADSHEET_ID,
-        range=SHEET_NAME,  # only sheet name, no cell address
-        valueInputOption='RAW',
-        insertDataOption='INSERT_ROWS',
-        body=body
-    ).execute()
+# def append_to_google_sheet(data: dict):
+#     sheet = service.spreadsheets()
+#     # Order fields exactly as your Google Sheet columns
+#     values = [[
+#         data["Company Name"],
+#         data["Point of Contact"],
+#         data["Email"],
+#         data["Phone"],
+#         data["Storage Location"],
+#         data["Commodity Type"],
+#         data["Commodity"],
+#         data["MSDS Uploaded"],
+#         data["Storage Type"],
+#         data["Required Temperature (°C)"],
+#         data["Package Type"],
+#         data["Billing Unit"],
+#         data["Shipment Location"],
+#         data["Expected Start Date"],
+#         data["Handling In"],
+#         data["Handling Out"],
+#         data["Number of SKUs"],
+#         data["Mixed SKUs"],
+#         data["Segregation Required"],
+#         data["Tracking Method"],
+#         data["Packing List Uploaded"],
+#         data["Documents Uploaded"]
+#     ]]
+#     body = {'values': values}
+#     result = sheet.values().append(
+#         spreadsheetId=SPREADSHEET_ID,
+#         range=SHEET_NAME,  # only sheet name, no cell address
+#         valueInputOption='RAW',
+#         insertDataOption='INSERT_ROWS',
+#         body=body
+#     ).execute()
 
-    return result
+#     return result
 
 
 # ------------------- Submit Button -------------------
