@@ -159,7 +159,10 @@ packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pd
 # ------------------- SECTION 3: Handling Requirements -------------------
 st.header("🟧 Section 3: Handling Requirements")
 
+col_1,col_2=st.columns(2)
+with col_1:
 handling_in = st.selectbox("Handling In", ["Loose", "Pallets", "Not Required","Offloading"])
+with col_2:
 handling_out = st.selectbox("Handling Out", ["Loose", "Pallets", "Not Required", "Pieces","Loading","Boxes"])
 
 # Inventory Tracking Display
