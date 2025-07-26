@@ -249,48 +249,32 @@ if st.button("Submit Form"):
     segregation_required = "Yes" if 'mixed_skus' in locals() and mixed_skus == "Yes" else "No"
 
     # Prepare summary of inputs
-    summary_data = {
+    summary = {
         "Company Name": "Autofetched Co.",
         "Point of Contact": "John Doe",
         "Email": "john@autofetched.com",
         "Phone": "+971500000000",
-        "Storage Location(s)": ", ".join(storage_location) if storage_location else "Not Selected",
+        "Storage Location": storage_location,
         "Commodity Type": commodity_type,
         "Commodity": commodity,
         "MSDS Uploaded": "Yes" if commodity_type == "DG" and msds_file else "No",
         "Storage Type": storage_type,
-        "Required Temperature (°C)": str(required_temperature) if required_temperature else "N/A",
+        "Required Temperature (°C)": required_temperature if required_temperature else "N/A",
         "Package Type": package_type,
         "Billing Unit": billing_unit,
-        "Expected Space": str(expected_space) if 'expected_space' in locals() else "N/A",
+        "Expected Space": expected_space if 'expected_space' in locals() else "N/A",
         "Shipment Location": shipment_location,
         "Expected Start Date": expected_start.strftime("%Y-%m-%d"),
         "Handling In": handling_in,
         "Handling Out": handling_out,
-        "Number of SKUs": str(sku_count) if 'sku_count' in locals() else "N/A",
+        "Number of SKUs": sku_count if 'sku_count' in locals() else "N/A",
         "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
         "Segregation Required": segregation_required,
         "Tracking Method": tracking_method if 'tracking_method' in locals() else "N/A",
         "Packing List Uploaded": "Yes" if packing_list else "No",
-        "Documents Uploaded": f"{len(documents)} file(s)" if documents else "0"
+        "Documents Uploaded": len(documents) if documents else 0
     }
 
-    # Display summary in a readable format
-    st.subheader("📋 Lead Summary")
-
-    # Use Markdown to format the summary
-    summary_html = "<div style='background:#f9f9f9; padding:15px; border-radius:8px;'>"
-    summary_html += "<h4 style='color:#333;'>Lead Details</h4>"
-    summary_html += "<table style='width:100%; border-collapse: collapse;'>"
-
-    for key, value in summary_data.items():
-        summary_html += f"""
-        <tr>
-            <td style='padding:8px; font-weight:bold; color:#444;'>{key}</td>
-            <td style='padding:8px; color:#222;'>{value}</td>
-        </tr>
-        """
-
-    summary_html += "</table></div>"
-
-    st.markdown(summary_html, unsafe_allow_html=True)
+    # Display summary in a neat format
+    st.subheader("📋 Summary of Inputs")
+    st.json(summary)  # Displays as formatted JSON
