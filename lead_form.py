@@ -218,31 +218,28 @@ service = build('sheets', 'v4', credentials=credentials)
 #Document Upload-------------------------------
 from googleapiclient.errors import HttpError
 
-def upload_file_to_drive(file, folder_id=None):
+SHARED_DRIVE_FOLDER_ID = '0AJ2EMdEDYgIcUk9PVA'  # update this
+
+def upload_file_to_drive(file, folder_id=SHARED_DRIVE_FOLDER_ID):
     file_io = io.BytesIO(file.getbuffer())
-    file_metadata = {'name': file.name}
-    if folder_id:
-        file_metadata['parents'] = [folder_id]
+    file_metadata = {'name': file.name, 'parents': [folder_id]}
     mime_type = file.type if file.type else "application/octet-stream"
     media = MediaIoBaseUpload(file_io, mimetype=mime_type, resumable=True)
 
-    try:
-        uploaded_file = drive_service.files().create(
-            body=file_metadata,
-            media_body=media,
-            fields='id'
-        ).execute()
+    uploaded_file = drive_service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id',
+        supportsAllDrives=True  # IMPORTANT for shared drives
+    ).execute()
 
-        drive_service.permissions().create(
-            fileId=uploaded_file['id'],
-            body={'type': 'anyone', 'role': 'reader'}
-        ).execute()
+    drive_service.permissions().create(
+        fileId=uploaded_file['id'],
+        body={'type': 'anyone', 'role': 'reader'},
+        supportsAllDrives=True  # IMPORTANT
+    ).execute()
 
-        return f"https://drive.google.com/file/d/{uploaded_file['id']}/view?usp=sharing"
-
-    except HttpError as error:
-        st.error(f"An error occurred: {error}")
-        return None
+    return f"https://drive.google.com/file/d/{uploaded_file['id']}/view?usp=sharing"
 
 # ------------------- Save to Excel -------------------
 
