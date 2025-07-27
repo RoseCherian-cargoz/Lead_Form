@@ -193,15 +193,16 @@ if handling_out in ["Loose","Palletised","Pieces","Boxes","Loading"]:
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents", accept_multiple_files=True,help="Required Documents:\n1. Emirates ID\n2. VAT Certificate\n3. Trade License")
+#-----------------------------------------------------------------------------------------
 
-# ------------------- Save to Excel -------------------
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
 
 SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
 SHEET_NAME = 'Sheet1'  # exact name of the sheet tab
 
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive"]
 
 # Use service account info from Streamlit secrets to create credentials
 credentials = service_account.Credentials.from_service_account_info(
@@ -209,7 +210,31 @@ credentials = service_account.Credentials.from_service_account_info(
     scopes=SCOPES
 )
 
+drive_service = build('drive', 'v3', credentials=credentials)
 service = build('sheets', 'v4', credentials=credentials)
+
+#Document Upload-------------------------------
+def upload_file_to_drive(file, folder_id=None):
+    file_io = io.BytesIO(file.getbuffer())
+    file_metadata = {'name': file.name}
+    if folder_id:
+        file_metadata['parents'] = [folder_id]
+    media = MediaIoBaseUpload(file_io, mimetype=file.type, resumable=True)
+
+    uploaded_file = drive_service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id'
+    ).execute()
+
+    drive_service.permissions().create(
+        fileId=uploaded_file['id'],
+        body={'type': 'anyone', 'role': 'reader'}
+    ).execute()
+
+    return f"https://drive.google.com/file/d/{uploaded_file['id']}/view?usp=sharing"
+
+# ------------------- Save to Excel -------------------
 
 def append_to_google_sheet(data: dict):
     sheet = service.spreadsheets()
@@ -278,6 +303,12 @@ def append_to_google_sheet(data: dict):
 # ------------------- Submit Button -------------------
 if st.button("Submit Form"):
     segregation_required = "Yes" if mixed_skus == "Yes" else "No"
+    packing_list_link = upload_file_to_drive(packing_list) if packing_list else ""
+    documents_links = []
+    if documents:
+        for doc in documents:
+            documents_links.append(upload_file_to_drive(doc))
+    msds_link = upload_file_to_drive(msds_file) if commodity_type == "DG" and msds_file else ""
 
     summary = {
         "Company Name": company_name,
@@ -302,6 +333,8 @@ if st.button("Submit Form"):
         "Tracking Method": tracking_method,
         "Packing List Uploaded": "Yes" if packing_list else "No",
         "Documents Uploaded": len(documents) if documents else 0
+        "Packing List Uploaded": packing_list_link,
+        "Documents Uploaded": ", ".join(documents_links)
     }
 
     # Append data to Google Sheet
