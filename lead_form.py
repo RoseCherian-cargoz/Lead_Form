@@ -3,7 +3,6 @@ from datetime import date
 import pandas as pd
 import os
 from openpyxl import load_workbook
-import io
 
 # ---------------- Streamlit Config ----------------
 st.set_page_config(page_title="Storage Requirement Form", layout="centered")
@@ -200,6 +199,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.http import MediaIoBaseUpload
+import io
 
 SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
 SHEET_NAME = 'Sheet1'  # exact name of the sheet tab
@@ -216,25 +216,33 @@ drive_service = build('drive', 'v3', credentials=credentials)
 service = build('sheets', 'v4', credentials=credentials)
 
 #Document Upload-------------------------------
+from googleapiclient.errors import HttpError
+
 def upload_file_to_drive(file, folder_id=None):
     file_io = io.BytesIO(file.getbuffer())
     file_metadata = {'name': file.name}
     if folder_id:
         file_metadata['parents'] = [folder_id]
-    media = MediaIoBaseUpload(file_io, mimetype=file.type, resumable=True)
+    mime_type = file.type if file.type else "application/octet-stream"
+    media = MediaIoBaseUpload(file_io, mimetype=mime_type, resumable=True)
 
-    uploaded_file = drive_service.files().create(
-        body=file_metadata,
-        media_body=media,
-        fields='id'
-    ).execute()
+    try:
+        uploaded_file = drive_service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields='id'
+        ).execute()
 
-    drive_service.permissions().create(
-        fileId=uploaded_file['id'],
-        body={'type': 'anyone', 'role': 'reader'}
-    ).execute()
+        drive_service.permissions().create(
+            fileId=uploaded_file['id'],
+            body={'type': 'anyone', 'role': 'reader'}
+        ).execute()
 
-    return f"https://drive.google.com/file/d/{uploaded_file['id']}/view?usp=sharing"
+        return f"https://drive.google.com/file/d/{uploaded_file['id']}/view?usp=sharing"
+
+    except HttpError as error:
+        st.error(f"An error occurred: {error}")
+        return None
 
 # ------------------- Save to Excel -------------------
 
