@@ -342,7 +342,7 @@ if st.button("Submit Form"):
         "Mixed SKUs": mixed_skus,
         "Segregation Required": segregation_required,
         # "Tracking Method": tracking_method,
-        "Tracking Method": ", ".join(tracking_method)
+        "Tracking Method": ", ".join(tracking_method),
         # "Tracking Method": ", ".join(tracking_method) if tracking_method else "N/A",
         "Packing List Uploaded": "Yes" if packing_list else "No",
         "Documents Uploaded": len(documents) if documents else 0,
