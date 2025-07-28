@@ -180,7 +180,8 @@ elif handling_out == "Loose":
     st.info("Inventory will be tracked by: Boxes")
 elif handling_out == "Pieces":
     st.info("Inventory will be tracked by: Pallets")
-
+elif handling_out == "Boxes":
+    st.info("Inventory will be tracked by: Boxes")
 # ------------------- SECTION 4: Detailed Handling Requirements -------------------
 if handling_out in ["Loose","Palletised","Pieces","Boxes","Loading"]:
     st.header("🟥 Section 4: Detailed Handling Requirements")
@@ -188,7 +189,7 @@ if handling_out in ["Loose","Palletised","Pieces","Boxes","Loading"]:
     mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes","No"])
     if mixed_skus == "Yes":
         st.checkbox("Segregation Required", value=True, disabled=True,help="Segregation is required due to mixed SKUs")
-    tracking_method = st.multiselect("How is Inventory Tracking Maintained?", ["Lot Number","Expiry Date","SKU Value"],help="Select inventory tracking method")
+    tracking_method = st.multiselect("How is Inventory Tracking Maintained?", ["Lot Number","Expiry Date","SKU Value","Batch Number"],help="Select inventory tracking method")
 
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
