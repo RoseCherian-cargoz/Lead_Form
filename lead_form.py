@@ -188,7 +188,7 @@ if handling_out in ["Loose","Palletised","Pieces","Boxes","Loading"]:
     mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes","No"])
     if mixed_skus == "Yes":
         st.checkbox("Segregation Required", value=True, disabled=True,help="Segregation is required due to mixed SKUs")
-    tracking_method = st.selectbox("How is Inventory Tracking Maintained?", ["Lot Number","Expiry Date","SKU Value"],help="Select inventory tracking method")
+    tracking_method = st.multiselect("How is Inventory Tracking Maintained?", ["Lot Number","Expiry Date","SKU Value"],help="Select inventory tracking method")
 
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
