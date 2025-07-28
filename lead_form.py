@@ -206,7 +206,7 @@ from googleapiclient.errors import HttpError
 
 
 SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
-SHEET_NAME = 'Sheet1'  # exact name of the sheet tab
+SHEET_NAME = 'data'  # exact name of the sheet tab
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive"]
 
