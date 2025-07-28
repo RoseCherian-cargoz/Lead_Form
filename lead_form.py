@@ -202,6 +202,15 @@ from googleapiclient.http import MediaFileUpload
 from googleapiclient.http import MediaIoBaseUpload
 import io
 
+from googleapiclient.errors import HttpError
+
+try:
+    append_result = append_to_google_sheet(summary)
+except HttpError as e:
+    st.error("❌ Google Sheets API error")
+    st.code(e.content.decode(), language="json")
+    st.stop()
+    
 SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
 SHEET_NAME = 'Sheet1'  # exact name of the sheet tab
 
