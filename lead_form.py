@@ -342,21 +342,16 @@ if st.button("Submit Form"):
         "Mixed SKUs": mixed_skus,
         "Segregation Required": segregation_required,
         # "Tracking Method": tracking_method,
-        "Tracking Method": ", ".join(tracking_method) if tracking_method else "N/A",
-        # "Packing List Uploaded": "Yes" if packing_list else "No",
-        # "Documents Uploaded": len(documents) if documents else 0,
-        "Packing List Uploaded": packing_list_link if packing_list_link else "No",
-        "Documents Uploaded": ", ".join(documents_links) if documents_links else "No"
+        "Tracking Method": ", ".join(tracking_method)
+        # "Tracking Method": ", ".join(tracking_method) if tracking_method else "N/A",
+        "Packing List Uploaded": "Yes" if packing_list else "No",
+        "Documents Uploaded": len(documents) if documents else 0,
+        # "Packing List Uploaded": packing_list_link if packing_list_link else "No",
+        # "Documents Uploaded": ", ".join(documents_links) if documents_links else "No"
     }
 
     # Append data to Google Sheet
-    # append_result = append_to_google_sheet(summary)
+    append_result = append_to_google_sheet(summary)
 
-    try:
-        append_result = append_to_google_sheet(summary)
-        st.success("✅ Form submitted successfully and data saved to Google Sheets!")
-        st.json(summary)
-    except HttpError as e:
-        st.error("❌ Google Sheets API error")
-        st.code(e.content.decode(), language="json")
-        st.stop()
+    st.success("✅ Form submitted successfully and data saved to Google Sheets!")
+    st.json(summary)
