@@ -291,7 +291,9 @@ def append_to_google_sheet(data: dict):
 
         return append_result
 
-
+    except Exception as e:
+        st.error(f"Error while writing to Google Sheet: {e}")
+        st.stop()
 
 # ------------------- Submit Button -------------------
 if st.button("Submit Form"):
