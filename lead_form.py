@@ -252,7 +252,7 @@ def append_to_google_sheet(data: dict):
     if not existing_header:
         sheet.values().update(
             spreadsheetId=SPREADSHEET_ID,
-            range=f"{SHEET_NAME}!1:1",
+            range=f"{SHEET_NAME}!A1",
             valueInputOption='RAW',
             body={'values': [header]}
         ).execute()
