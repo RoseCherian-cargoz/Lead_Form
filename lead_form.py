@@ -331,8 +331,8 @@ if st.button("Submit Form"):
         "Storage Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
         "Commodity": commodity,
-        # "MSDS Uploaded": "Yes" if commodity_type=="DG" and msds_file else "No",
-        "MSDS Uploaded":msds_file if msds_file else "No"
+        "MSDS Uploaded": "Yes" if commodity_type=="DG" and msds_file else "No",
+        # "MSDS Uploaded":msds_file if msds_file else "No",
         "Storage Type": storage_type,
         "Required Temperature (°C)": required_temperature if required_temperature else "N/A",
         "Package Type": package_type,
