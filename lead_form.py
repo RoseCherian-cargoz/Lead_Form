@@ -204,13 +204,7 @@ import io
 
 from googleapiclient.errors import HttpError
 
-try:
-    append_result = append_to_google_sheet(summary)
-except HttpError as e:
-    st.error("❌ Google Sheets API error")
-    st.code(e.content.decode(), language="json")
-    st.stop()
-    
+
 SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
 SHEET_NAME = 'Sheet1'  # exact name of the sheet tab
 
@@ -356,7 +350,13 @@ if st.button("Submit Form"):
     }
 
     # Append data to Google Sheet
-    append_result = append_to_google_sheet(summary)
+    # append_result = append_to_google_sheet(summary)
 
-    st.success("✅ Form submitted successfully and data saved to Google Sheets!")
-    st.json(summary)
+    try:
+        append_result = append_to_google_sheet(summary)
+        st.success("✅ Form submitted successfully and data saved to Google Sheets!")
+        st.json(summary)
+    except HttpError as e:
+        st.error("❌ Google Sheets API error")
+        st.code(e.content.decode(), language="json")
+        st.stop()
