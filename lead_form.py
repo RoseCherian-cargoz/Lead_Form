@@ -180,8 +180,7 @@ elif handling_out == "Loose":
     st.info("Inventory will be tracked by: Boxes")
 elif handling_out == "Pieces":
     st.info("Inventory will be tracked by: Pallets")
-elif handling_out == "Boxes":
-    st.info("Inventory will be tracked by: Boxes")
+
 # ------------------- SECTION 4: Detailed Handling Requirements -------------------
 if handling_out in ["Loose","Palletised","Pieces","Boxes","Loading"]:
     st.header("🟥 Section 4: Detailed Handling Requirements")
@@ -189,26 +188,20 @@ if handling_out in ["Loose","Palletised","Pieces","Boxes","Loading"]:
     mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes","No"])
     if mixed_skus == "Yes":
         st.checkbox("Segregation Required", value=True, disabled=True,help="Segregation is required due to mixed SKUs")
-    tracking_method = st.multiselect("How is Inventory Tracking Maintained?", ["Lot Number","Expiry Date","SKU Value","Batch Number"],help="Select inventory tracking method")
+    tracking_method = st.selectbox("How is Inventory Tracking Maintained?", ["Lot Number","Expiry Date","SKU Value"],help="Select inventory tracking method")
 
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents", accept_multiple_files=True,help="Required Documents:\n1. Emirates ID\n2. VAT Certificate\n3. Trade License")
-#-----------------------------------------------------------------------------------------
 
+# ------------------- Save to Excel -------------------
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
-from googleapiclient.http import MediaIoBaseUpload
-import io
-
-from googleapiclient.errors import HttpError
-
 
 SPREADSHEET_ID = '1vAA_G-GhJFvz_z8e22PpvXNV8KEWgMsSZIErKxJNEL8'  # only the ID
 SHEET_NAME = 'Sheet1'  # exact name of the sheet tab
 
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive"]
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # Use service account info from Streamlit secrets to create credentials
 credentials = service_account.Credentials.from_service_account_info(
@@ -216,94 +209,75 @@ credentials = service_account.Credentials.from_service_account_info(
     scopes=SCOPES
 )
 
-drive_service = build('drive', 'v3', credentials=credentials)
 service = build('sheets', 'v4', credentials=credentials)
 
-#Document Upload-------------------------------
-from googleapiclient.errors import HttpError
-
-SHARED_DRIVE_FOLDER_ID = '0AJ2EMdEDYgIcUk9PVA'  # update this
-
-def upload_file_to_drive(file, folder_id=SHARED_DRIVE_FOLDER_ID):
-    file_io = io.BytesIO(file.getbuffer())
-    file_metadata = {'name': file.name, 'parents': [folder_id]}
-    mime_type = file.type if file.type else "application/octet-stream"
-    media = MediaIoBaseUpload(file_io, mimetype=mime_type, resumable=True)
-
-    uploaded_file = drive_service.files().create(
-        body=file_metadata,
-        media_body=media,
-        fields='id',
-        supportsAllDrives=True  # IMPORTANT for shared drives
-    ).execute()
-
-    drive_service.permissions().create(
-        fileId=uploaded_file['id'],
-        body={'type': 'anyone', 'role': 'reader'},
-        supportsAllDrives=True  # IMPORTANT
-    ).execute()
-
-    return f"https://drive.google.com/file/d/{uploaded_file['id']}/view?usp=sharing"
-
-# ------------------- Save to Excel -------------------
-
 def append_to_google_sheet(data: dict):
-    try:
-        sheet = service.spreadsheets()
+    sheet = service.spreadsheets()
 
-        header = [
-            "Company Name", "Point of Contact", "Email", "Phone", "Storage Location",
-            "Commodity Type", "Commodity", "MSDS Uploaded", "Storage Type",
-            "Required Temperature (°C)", "Package Type", "Billing Unit", "Shipment Location",
-            "Expected Start Date", "Handling In", "Handling Out", "Number of SKUs",
-            "Mixed SKUs", "Segregation Required", "Tracking Method",
-            "Packing List Uploaded", "Documents Uploaded"
-        ]
+    # Define the header row (field names exactly as your sheet columns)
+    header = [
+        "Company Name",
+        "Point of Contact",
+        "Email",
+        "Phone",
+        "Storage Location",
+        "Commodity Type",
+        "Commodity",
+        "MSDS Uploaded",
+        "Storage Type",
+        "Required Temperature (°C)",
+        "Package Type",
+        "Billing Unit",
+        "Shipment Location",
+        "Expected Start Date",
+        "Handling In",
+        "Handling Out",
+        "Number of SKUs",
+        "Mixed SKUs",
+        "Segregation Required",
+        "Tracking Method",
+        "Packing List Uploaded",
+        "Documents Uploaded"
+    ]
 
-        # Read the header
-        result = sheet.values().get(
+    # First, read the first row to check if header exists
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=f"{SHEET_NAME}!1:1"
+    ).execute()
+
+    existing_header = result.get('values', [])
+
+    # If header row is empty, write it
+    if not existing_header:
+        sheet.values().update(
             spreadsheetId=SPREADSHEET_ID,
-            range=SHEET_NAME
-        ).execute()
-
-        existing_header = result.get('values', [])
-
-        # Insert header if missing
-        if not existing_header:
-            sheet.values().update(
-                spreadsheetId=SPREADSHEET_ID,
-                range=f"{SHEET_NAME}!A1",
-                valueInputOption='RAW',
-                body={'values': [header]}
-            ).execute()
-
-        # Prepare row in header order
-        values = [[data.get(field, "") for field in header]]
-
-        # Append the data
-        append_result = sheet.values().append(
-            spreadsheetId=SPREADSHEET_ID,
-            range=f"{SHEET_NAME}!A2",
+            range=f"{SHEET_NAME}!1:1",
             valueInputOption='RAW',
-            insertDataOption='INSERT_ROWS',
-            body={'values': values}
+            body={'values': [header]}
         ).execute()
 
-        return append_result
+    # Prepare data row values in the same order as header
+    values = [[
+        data.get(field, "") for field in header
+    ]]
 
-    except Exception as e:
-        st.error(f"Error while writing to Google Sheet: {e}")
-        st.stop()
+    # Append data below header row
+    body = {'values': values}
+    append_result = sheet.values().append(
+        spreadsheetId=SPREADSHEET_ID,
+        range=f"{SHEET_NAME}!A2",  # start appending from second row
+        valueInputOption='RAW',
+        insertDataOption='INSERT_ROWS',
+        body=body
+    ).execute()
+
+    return append_result
+
 
 # ------------------- Submit Button -------------------
 if st.button("Submit Form"):
     segregation_required = "Yes" if mixed_skus == "Yes" else "No"
-    packing_list_link = upload_file_to_drive(packing_list) if packing_list else ""
-    documents_links = []
-    if documents:
-        for doc in documents:
-            documents_links.append(upload_file_to_drive(doc))
-    msds_link = upload_file_to_drive(msds_file) if commodity_type == "DG" and msds_file else ""
 
     summary = {
         "Company Name": company_name,
@@ -325,13 +299,9 @@ if st.button("Submit Form"):
         "Number of SKUs": sku_count if 'sku_count' in locals() else "N/A",
         "Mixed SKUs": mixed_skus,
         "Segregation Required": segregation_required,
-        # "Tracking Method": tracking_method,
-        "Tracking Method": ", ".join(tracking_method),
-        # "Tracking Method": ", ".join(tracking_method) if tracking_method else "N/A",
+        "Tracking Method": tracking_method,
         "Packing List Uploaded": "Yes" if packing_list else "No",
-        "Documents Uploaded": len(documents) if documents else 0,
-        # "Packing List Uploaded": packing_list_link if packing_list_link else "No",
-        # "Documents Uploaded": ", ".join(documents_links) if documents_links else "No"
+        "Documents Uploaded": len(documents) if documents else 0
     }
 
     # Append data to Google Sheet
