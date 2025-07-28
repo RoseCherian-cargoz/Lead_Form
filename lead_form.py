@@ -339,10 +339,10 @@ if st.button("Submit Form"):
         "Mixed SKUs": mixed_skus,
         "Segregation Required": segregation_required,
         "Tracking Method": tracking_method,
-        "Packing List Uploaded": "Yes" if packing_list else "No",
-        "Documents Uploaded": len(documents) if documents else 0,
-        "Packing List Uploaded": packing_list_link,
-        "Documents Uploaded": ", ".join(documents_links)
+        # "Packing List Uploaded": "Yes" if packing_list else "No",
+        # "Documents Uploaded": len(documents) if documents else 0,
+        "Packing List Uploaded": packing_list_link if packing_list_link else "No",
+        "Documents Uploaded": ", ".join(documents_links) if documents_links else "No"
     }
 
     # Append data to Google Sheet
