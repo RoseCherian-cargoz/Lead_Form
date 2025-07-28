@@ -338,7 +338,8 @@ if st.button("Submit Form"):
         "Number of SKUs": sku_count if 'sku_count' in locals() else "N/A",
         "Mixed SKUs": mixed_skus,
         "Segregation Required": segregation_required,
-        "Tracking Method": tracking_method,
+        # "Tracking Method": tracking_method,
+        "Tracking Method": ", ".join(tracking_method) if tracking_method else "N/A"
         # "Packing List Uploaded": "Yes" if packing_list else "No",
         # "Documents Uploaded": len(documents) if documents else 0,
         "Packing List Uploaded": packing_list_link if packing_list_link else "No",
