@@ -331,7 +331,8 @@ if st.button("Submit Form"):
         "Storage Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
         "Commodity": commodity,
-        "MSDS Uploaded": "Yes" if commodity_type=="DG" and msds_file else "No",
+        # "MSDS Uploaded": "Yes" if commodity_type=="DG" and msds_file else "No",
+        "MSDS Uploaded":msds_file if msds_file else "No"
         "Storage Type": storage_type,
         "Required Temperature (°C)": required_temperature if required_temperature else "N/A",
         "Package Type": package_type,
@@ -346,10 +347,10 @@ if st.button("Submit Form"):
         # "Tracking Method": tracking_method,
         "Tracking Method": ", ".join(tracking_method),
         # "Tracking Method": ", ".join(tracking_method) if tracking_method else "N/A",
-        "Packing List Uploaded": "Yes" if packing_list else "No",
-        "Documents Uploaded": len(documents) if documents else 0,
-        # "Packing List Uploaded": packing_list_link if packing_list_link else "No",
-        # "Documents Uploaded": ", ".join(documents_links) if documents_links else "No"
+        # "Packing List Uploaded": "Yes" if packing_list else "No",
+        # "Documents Uploaded": len(documents) if documents else 0,
+        "Packing List Uploaded": packing_list_link if packing_list_link else "No",
+        "Documents Uploaded": ", ".join(documents_links) if documents_links else "No"
     }
 
     # Append data to Google Sheet
