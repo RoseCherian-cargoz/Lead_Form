@@ -11,6 +11,7 @@ st.title("📦 Lead Form")
 
 # ------------------- SECTION 1: Contact Details -------------------
 import streamlit as st
+import uuid
 
 st.header("🟩 Section 1: Contact Details")
 contact_roles = ["Owner", "Accountant", "Ops", "Commercial"]
@@ -18,85 +19,76 @@ contact_roles = ["Owner", "Accountant", "Ops", "Commercial"]
 # Company Name input
 company_name = st.text_input("Company Name", value="", placeholder="Enter company name")
 
-# Initialize contacts in session state
+# Initialize contacts in session_state
 if "contacts" not in st.session_state:
     st.session_state.contacts = [
-        {"contact_person": "", "email": "", "phone": "", "role": []}
+        {"id": str(uuid.uuid4()), "contact_person": "", "email": "", "phone": "", "role": []}
     ]
 
-# Function to add a new blank contact
+# Add new contact
 def add_contact():
-    st.session_state.contacts.append({"contact_person": "", "email": "", "phone": "", "role": []})
+    st.session_state.contacts.append(
+        {"id": str(uuid.uuid4()), "contact_person": "", "email": "", "phone": "", "role": []}
+    )
 
-# Function to delete contact at index
-def delete_contact(index):
-    del st.session_state.contacts[index]
+# Delete contact by id
+def delete_contact(contact_id):
+    st.session_state.contacts = [c for c in st.session_state.contacts if c["id"] != contact_id]
 
-# Render all contacts
-i = 0
-while i < len(st.session_state.contacts):
-    contact = st.session_state.contacts[i]
+# Render contacts
+for idx, contact in enumerate(st.session_state.contacts):
+    key_prefix = contact["id"]  # Unique key for each contact
 
-    if i == 0:
+    if idx == 0:
         st.markdown("### Primary Contact")
         col1, col2 = st.columns(2)
 
         with col1:
             contact["contact_person"] = st.text_input(
-                "Point of Contact", value=contact["contact_person"], key=f"contact_person_{i}",
-                placeholder="Enter contact person name"
+                "Point of Contact", value=contact["contact_person"], key=f"{key_prefix}_contact_person"
             )
 
         with col2:
             contact["email"] = st.text_input(
-                "Email", value=contact["email"], key=f"email_{i}",
-                placeholder="Enter email address"
+                "Email", value=contact["email"], key=f"{key_prefix}_email"
             )
 
         col3, col4 = st.columns(2)
         with col3:
             contact["phone"] = st.text_input(
-                "Phone", value=contact["phone"], key=f"phone_{i}",
-                placeholder="Enter phone number"
+                "Phone", value=contact["phone"], key=f"{key_prefix}_phone"
             )
 
         with col4:
             contact["role"] = st.multiselect(
-                "Role", options=contact_roles, default=contact["role"],
-                key=f"role_{i}", help="Select one or more roles"
+                "Role", options=contact_roles, default=contact["role"], key=f"{key_prefix}_role"
             )
+
     else:
-        with st.expander(f"➕ Contact #{i + 1}", expanded=True):
+        with st.expander(f"➕ Contact #{idx + 1}", expanded=True):
             col1, col2 = st.columns(2)
             with col1:
                 contact["contact_person"] = st.text_input(
-                    "Point of Contact", value=contact["contact_person"], key=f"contact_person_{i}",
-                    placeholder="Enter contact person name"
+                    "Point of Contact", value=contact["contact_person"], key=f"{key_prefix}_contact_person"
                 )
             with col2:
                 contact["email"] = st.text_input(
-                    "Email", value=contact["email"], key=f"email_{i}",
-                    placeholder="Enter email address"
+                    "Email", value=contact["email"], key=f"{key_prefix}_email"
                 )
 
             col3, col4 = st.columns(2)
             with col3:
                 contact["phone"] = st.text_input(
-                    "Phone", value=contact["phone"], key=f"phone_{i}",
-                    placeholder="Enter phone number"
+                    "Phone", value=contact["phone"], key=f"{key_prefix}_phone"
                 )
             with col4:
                 contact["role"] = st.multiselect(
-                    "Role", options=contact_roles, default=contact["role"],
-                    key=f"role_{i}", help="Select one or more roles"
+                    "Role", options=contact_roles, default=contact["role"], key=f"{key_prefix}_role"
                 )
 
-            remove_key = f"remove_contact_{i}"
-            if st.button("🗑️ Remove Contact", key=remove_key):
-                delete_contact(i)
-                # Restart loop to avoid index mismatch
-                continue
-    i += 1
+            if st.button("🗑️ Remove Contact", key=f"{key_prefix}_remove"):
+                delete_contact(contact["id"])
+                st.experimental_rerun()
 
 # Button to add new contact
 if st.button("➕ Add Another Contact"):
