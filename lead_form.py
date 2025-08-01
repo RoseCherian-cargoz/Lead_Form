@@ -509,7 +509,7 @@ if st.button("Submit Form"):
         "Where is the Cargo now": cargo_location,
         "Comments on cargo location": cargo_location_comment,
         "Known Risk Factor [Yes/No]": risk_factor,
-        "Risk Factor Comments": risk_comment if risk_factor == "Yes" else "N/A",
+        "Risk Factor Comments": risk_factor_comment if risk_factor == "Yes" else "N/A",
         "Expected Start Date": expected_start.strftime("%Y-%m-%d"),
         "Package Type(s)": ", ".join(selected_package_types),
         "Space Unit": space_unit,
