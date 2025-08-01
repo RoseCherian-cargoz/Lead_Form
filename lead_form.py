@@ -151,6 +151,7 @@ if st.checkbox("❗ Any known risk factor with the commodity?", key="risk_checkb
         key="risk_comment"
     )
 else:
+    risk_factor = "No"
     risk_factor_comment = ""
 
 # Row 7: Expected Start Date
