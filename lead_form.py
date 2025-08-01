@@ -210,7 +210,7 @@ if any(pt in selected_package_types for pt in space_types):
         dimensions = st.text_input(
             "Dimensions (L x W x H in cm)",
             help="Enter typical dimensions of packages"
-        )
+        ) 
 
     with col3:
         approx_space = st.text_input(
@@ -251,6 +251,89 @@ if handling_in == "Yes" and handling_out == "No":
 # You can now use `handling_out` to conditionally display Section 4
 if handling_out == "Yes":
     st.markdown("✅ Proceed to Section 4")
+#---------------Section 4 - Inventory and Tracking--------------
+st.header("✅ Section 4: Inventory & Tracking")
+
+# --- Handling Types ---
+col1, col2 = st.columns(2)
+
+with col1:
+    handling_in = st.selectbox(
+        "Handling In Type",
+        ["Loose", "Palletized"],
+        key="handling_in"
+    )
+
+with col2:
+    handling_out = st.selectbox(
+        "Handling Out Type",
+        ["Loose", "Palletized", "Pieces"],
+        key="handling_out"
+    )
+
+# --- SKU Logic Branches ---
+sku_count = None
+segregation = None
+seg_charges_note = ""
+inventory_charge_warning = ""
+
+# Conditions where SKU question must be asked
+if (handling_in == "Loose" and handling_out == "Loose") or \
+   (handling_in == "Palletized" and handling_out in ["Loose", "Palletized"]):
+
+    st.subheader("🧩 SKU Details")
+
+    if handling_in == "Palletized" and handling_out in ["Loose", "Palletized"]:
+        mixed_skus = st.selectbox(
+            "Are SKUs mixed per pallet?",
+            ["Yes", "No"],
+            key="mixed_skus"
+        )
+
+        if mixed_skus == "Yes":
+            segregation = st.selectbox(
+                "Do you need segregation?",
+                ["Yes", "No"],
+                key="need_segregation"
+            )
+
+            if segregation == "Yes":
+                st.markdown("""
+                    <div style="background-color:#fff3cd; border-left:6px solid #ffc107; padding:10px; border-radius:4px;">
+                    ⚠️ <strong>Segregation Charges apply</strong>
+                    </div>
+                """, unsafe_allow_html=True)
+
+    sku_count = st.number_input(
+        "Number of SKUs",
+        min_value=1,
+        step=1
+    )
+
+# --- Inventory Charges Warning ---
+# Show warning if SKU count > 5 and user inputs small volume
+
+if sku_count and sku_count > 5:
+    col_cbm, col_pallets = st.columns(2)
+
+    with col_cbm:
+        try:
+            cbm = float(st.text_input("Total CBM", placeholder="e.g., 4.5"))
+        except:
+            cbm = 0.0
+
+    with col_pallets:
+        try:
+            pallet_qty = int(st.text_input("Total Pallets", placeholder="e.g., 2"))
+        except:
+            pallet_qty = 0
+
+    if pallet_qty < 3 or cbm < 5:
+        st.markdown("""
+            <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+            ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
+            </div>
+        """, unsafe_allow_html=True)
 
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
