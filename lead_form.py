@@ -497,7 +497,7 @@ if st.button("Submit Form"):
         "Point of Contact": contact_person,
         "Email": email,
         "Phone": phone,
-        "Role": ", ".join(role) if isinstance(role, list) else role,,
+        "Role": ", ".join(role) if isinstance(role, list) else role,
         "Location Constraints": location_constraint,
         "Selected Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
