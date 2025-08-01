@@ -197,19 +197,22 @@ for package in selected_package_types:
 space_types = ["Crates", "Bags", "Oversized/Overweight", "Pallets"]
 if any(pt in selected_package_types for pt in space_types):
     st.subheader("📏 Detailed Space Requirements")
-    row2_col1 = st.container()
 
-    with row2_col1:
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
         average_weight = st.text_input(
             "Average Weight (kg)",
             help="Enter average weight of the packages"
         )
 
+    with col2:
         dimensions = st.text_input(
             "Dimensions (L x W x H in cm)",
             help="Enter typical dimensions of packages"
         )
 
+    with col3:
         approx_space = st.text_input(
             "Approximate Space Required",
             help="Rough estimate of total space needed"
