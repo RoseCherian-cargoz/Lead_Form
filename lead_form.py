@@ -534,6 +534,8 @@ def append_multiple_contacts_to_google_sheet(lead_data: dict, contacts: list):
             "Total CBM",
             "Total Palletes",
             "Inventory Charge [Yes/No]",
+            "How will you take the items later",
+            "What tracking details do you need",
             "Documents Uploaded"
         ]
 
@@ -650,6 +652,8 @@ if st.button("Submit Form"):
         "Total CBM": cbm if 'cbm' in locals() else "N/A",
         "Total Palletes": pallet_qty if 'pallet_qty' in locals() else "N/A",
         "Inventory Charge [Yes/No]": "Yes" if sku_count and sku_count > 5 and (cbm < 5 or pallet_qty < 3) else "No",
+        "How will you take the items later":output_method,
+        "What tracking details do you need":", ".join(tracking_details),
         "Documents Uploaded": ", ".join(documents_links) if documents else "No"
     }
 
