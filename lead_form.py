@@ -312,7 +312,7 @@ with col_out:
     )
 
 # --- Conditional Warning ---
-if handling_in == "Yes" and handling_out == "No":
+if handling_out == "No":
     st.markdown("""
         <div style="background-color:#fff3cd; border-left:6px solid #ffa500; padding:10px; border-radius:4px;">
         ❗ <strong>Warning:</strong> Without <b>Handling Out</b>, we cannot track your inventory. 
