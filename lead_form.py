@@ -439,7 +439,7 @@ def append_to_google_sheet(data: dict):
             "Handling Out Type [Loose/Palletised/Pieces]",
             "Mixed SKUs",
             "Segregation Required",
-            "No of SKU's,
+            "No of SKU's",
             "Total CBM",
             "Total Palletes",
             "Inventory Charge [Yes/No]",
