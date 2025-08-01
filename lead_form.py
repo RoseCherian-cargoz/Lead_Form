@@ -434,16 +434,16 @@ def append_to_google_sheet(data: dict):
             "Approximate Space Required",
             "Packing List File (link)",
             "Handling In Required [Yes/No]",
-            "Handling Out Required []Yes/No",
+            "Handling Out Required [Yes/No]",
             "Handling In Type [Loose/Palletised]",
             "Handling Out Type [Loose/Palletised/Pieces]",
             "Mixed SKUs",
             "Segregation Required",
-            "No of SKU's",
+            "No of SKU's,
             "Total CBM",
             "Total Palletes",
             "Inventory Charge [Yes/No]",
-            "Documents Uploaded"
+            "Documents Uploaded",
         ]
 
         # Check if header exists
@@ -527,7 +527,7 @@ if st.button("Submit Form"):
         "Approximate Space Required": approx_space if 'approx_space' in locals() else "N/A",
         "Packing List File (link)": upload_file_to_drive(packing_list) if packing_list else "No",
         "Handling In Required [Yes/No]": handling_in,
-        "Handling Out Required []Yes/No": handling_out,
+        "Handling Out Required [Yes/No]": handling_out,
         "Handling In Type [Loose/Palletised]": handling_in_type,
         "Handling Out Type [Loose/Palletised/Pieces]": handling_out_type,
         "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
