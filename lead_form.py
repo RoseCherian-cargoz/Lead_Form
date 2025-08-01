@@ -31,7 +31,7 @@ role = st.multiselect("Role", options=contact_roles, help="Select one or more ro
 if st.button("➕ Add Another Contact"):
     st.info("Functionality to add multiple contacts can be implemented dynamically using session_state or a form loop.")
 
-# ------------------- SECTION 2: Storage Details -------------------
+# ------------------- SECTION 2: Storage Needs -------------------
 st.header("✅ Section 2: Storage Needs")
 
 row1_col1, row1_col2 = st.columns(2)
@@ -160,30 +160,84 @@ with row7_col1:
         min_value=date.today(),
         help="Select expected start date"
     )
-# ------------------- SECTION 3: Handling Requirements -------------------
-st.header("🟧 Section 3: Handling Requirements")
-col_1,col_2=st.columns(2)
-with col_1:
-    handling_in = st.selectbox("Handling In", ["Loose","Pallets","Not Required","Offloading"],help="Select how goods are handled on arrival")
-with col_2:
-    handling_out = st.selectbox("Handling Out", ["Loose","Pallets","Not Required","Pieces","Loading","Boxes"],help="Select how goods are handled when dispatched")
+# ------------------- SECTION 3: Space Assesment -------------------
+st.header("✅ Section 3: Space Assessment")
 
-if handling_out == "Pallets":
-    st.info("Inventory will be tracked by: Pallets")
-elif handling_out == "Loose":
-    st.info("Inventory will be tracked by: Boxes")
-elif handling_out == "Pieces":
-    st.info("Inventory will be tracked by: Pallets")
-elif handling_out == "Boxes":
-    st.info("Inventory will be tracked by: Boxes")
-# ------------------- SECTION 4: Detailed Handling Requirements -------------------
-if handling_out in ["Loose","Palletised","Pieces","Boxes","Loading"]:
-    st.header("🟥 Section 4: Detailed Handling Requirements")
-    sku_count = st.number_input("Number of SKUs", min_value=0,help="Enter the number of Stock Keeping Units (SKUs)")
-    mixed_skus = st.selectbox("Are SKUs in the Pallets Mixed?", ["Yes","No"])
-    if mixed_skus == "Yes":
-        st.checkbox("Segregation Required", value=True, disabled=True,help="Segregation is required due to mixed SKUs")
-    tracking_method = st.multiselect("How is Inventory Tracking Maintained?", ["Lot Number","Expiry Date","SKU Value","Batch Number"],help="Select inventory tracking method")
+# --- Package Type Selection ---
+package_types = ["Crates", "Boxes", "Bags", "Oversized/Overweight", "Pallets", "Other"]
+selected_package_types = st.multiselect(
+    "Package Type(s)",
+    options=package_types,
+    help="Select all applicable package types"
+)
+
+# --- Number of Packages ---
+num_packages_dict = {}
+for package in selected_package_types:
+    num_packages_dict[package] = st.text_input(
+        f"Number of {package}",
+        help=f"Enter the number of {package.lower()}",
+        key=f"num_{package.lower().replace('/', '_')}"
+    )
+
+# --- Show weight, dimensions, space required only for certain types ---
+space_types = ["Crates", "Bags", "Oversized/Overweight", "Pallets"]
+if any(pt in selected_package_types for pt in space_types):
+    st.subheader("📏 Detailed Space Requirements")
+
+    average_weight = st.text_input(
+        "Average Weight (kg)",
+        help="Enter average weight of the packages"
+    )
+
+    dimensions = st.text_input(
+        "Dimensions (L x W x H in cm)",
+        help="Enter typical dimensions of packages"
+    )
+
+    approx_space = st.text_input(
+        "Approximate Space Required",
+        help="Rough estimate of total space needed"
+    )
+
+# --- Space Unit ---
+space_unit = st.selectbox(
+    "Space Unit",
+    options=["CBM", "SQFT", "Pallets", "Not Sure"],
+    help="Choose unit of space measurement"
+)
+
+# --- Handling In/Out ---
+col_in, col_out = st.columns(2)
+
+with col_in:
+    handling_in = st.radio(
+        "Handling In Required?",
+        options=["Yes", "No"],
+        horizontal=True,
+        key="handling_in"
+    )
+
+with col_out:
+    handling_out = st.radio(
+        "Handling Out Required?",
+        options=["Yes", "No"],
+        horizontal=True,
+        key="handling_out"
+    )
+
+# --- Conditional Warning ---
+if handling_in == "Yes" and handling_out == "No":
+    st.markdown("""
+        <div style="background-color:#fff3cd; border-left:6px solid #ffa500; padding:10px; border-radius:4px;">
+        ❗ <strong>Warning:</strong> Without <b>Handling Out</b>, we cannot track your inventory. 
+        If tracking is important, warehouse must assist with Handling Out.
+        </div>
+    """, unsafe_allow_html=True)
+
+# You can now use `handling_out` to conditionally display Section 4
+if handling_out == "Yes":
+    st.markdown("✅ Proceed to Section 4")
 
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
