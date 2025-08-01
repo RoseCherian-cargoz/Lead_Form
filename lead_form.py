@@ -87,7 +87,17 @@ for idx, contact in enumerate(st.session_state.contacts):
                     "Phone", value=contact["phone"], key=f"{key_prefix}_phone"
                 )
             with col4:
-                contact["role"] = st.multiselect
+                contact["role"] = st.multiselect(
+                    "Role", options=contact_roles, default=contact["role"], key=f"{key_prefix}_role"
+                )
+
+            if st.button("🗑️ Remove Contact", key=f"{key_prefix}_remove"):
+                delete_contact(contact["id"])
+                st.experimental_rerun()
+
+# Button to add new contact
+if st.button("➕ Add Another Contact"):
+    add_contact()
 
 
 # ------------------- SECTION 2: Storage Needs -------------------
