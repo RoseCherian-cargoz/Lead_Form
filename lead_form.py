@@ -505,7 +505,7 @@ if st.button("Submit Form"):
         "Selected Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
         "Commodity Name": commodity_name,
-        "DG Class": ", ".join(dg_class_selected) if isinstance(dg_class_selected, list) else dg_class_selected,
+        "DG Class": ", ".join(dg_class_selected) if isinstance(dg_class_selected, list) else dg_class_selected,,
         "MSDS Uploaded": upload_file_to_drive(msds_file) if msds_file else "No",
         "Storage Type": storage_type,
         "Specific Temperature (°C)": required_temperature if required_temperature else "N/A",
@@ -540,7 +540,10 @@ if st.button("Submit Form"):
     }
 
     # Append data to Google Sheet
+    st.write("Data to append:", summary)
     append_result = append_to_google_sheet(summary)
+    st.write("Append result:", append_result)
+    # append_result = append_to_google_sheet(summary)
 
     st.success("✅ Form submitted successfully and data saved to Google Sheets!")
     st.json(summary)
