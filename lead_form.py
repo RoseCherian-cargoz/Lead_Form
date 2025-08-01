@@ -262,14 +262,14 @@ with col1:
     handling_in_type = st.selectbox(
         "Handling In Type",
         ["Loose", "Palletized"],
-        key="handling_in"
+        key="handling_in_type"
     )
 
 with col2:
     handling_out_type = st.selectbox(
         "Handling Out Type",
         ["Loose", "Palletized", "Pieces"],
-        key="handling_out"
+        key="handling_out_type"
     )
 
 # --- SKU Logic Branches ---
