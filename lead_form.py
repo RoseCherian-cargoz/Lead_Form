@@ -81,6 +81,27 @@ if commodity_type:
         help="Specify the exact commodity name or details"
     )
 
+# DG Class multi-select (only if Commodity Type == DG)
+if commodity_type == "DG":
+    dg_classes = [
+        "Class 1 Explosives",
+        "Class 2 Gases",
+        "Class 3 Flammable Liquids",
+        "Class 4 Flammable Solids",
+        "Class 5 Oxidizing Substances",
+        "Class 6 Toxic and Infectious Substances",
+        "Class 7 Radioactive Material",
+        "Class 8 Corrosives",
+        "Class 9 Miscellaneous Dangerous Goods"
+    ]
+    dg_class_selected = st.multiselect(
+        "DG Class",
+        options=dg_classes,
+        help="Select DG hazard classes"
+    )
+else:
+    dg_class_selected = []
+
 # Storage Type dropdown with specified options
 storage_types = [
     "NON AC",
@@ -105,26 +126,7 @@ if storage_type in ["AC", "Chiller", "Freezer", "Other"]:
         help="Enter the required storage temperature"
     )
 
-# DG Class multi-select (only if Commodity Type == DG)
-if commodity_type == "DG":
-    dg_classes = [
-        "Class 1 Explosives",
-        "Class 2 Gases",
-        "Class 3 Flammable Liquids",
-        "Class 4 Flammable Solids",
-        "Class 5 Oxidizing Substances",
-        "Class 6 Toxic and Infectious Substances",
-        "Class 7 Radioactive Material",
-        "Class 8 Corrosives",
-        "Class 9 Miscellaneous Dangerous Goods"
-    ]
-    dg_class_selected = st.multiselect(
-        "DG Class",
-        options=dg_classes,
-        help="Select DG hazard classes"
-    )
-else:
-    dg_class_selected = []
+
 
 cargo_location_options = [
     "Mainland",
