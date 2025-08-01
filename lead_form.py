@@ -467,7 +467,7 @@ def upload_file_to_drive(file, folder_id=SHARED_DRIVE_FOLDER_ID):
 
 # ------------------- Save to Excel -------------------
 
-def append_to_google_sheet(data: dict):
+def append_multiple_contacts_to_google_sheet(lead_data: dict, contacts: list):
     try:
         sheet = service.spreadsheets()
 
@@ -518,7 +518,7 @@ def append_to_google_sheet(data: dict):
         # Check if header exists and matches exactly in the first row
         result = sheet.values().get(
             spreadsheetId=SPREADSHEET_ID,
-            range=f"{SHEET_NAME}!A1:AO1"  # AO = 41st column approx.
+            range=f"{SHEET_NAME}!A1:AO1"  # Adjust columns as needed
         ).execute()
 
         existing_header = result.get('values', [])
@@ -531,20 +531,44 @@ def append_to_google_sheet(data: dict):
                 body={'values': [header]}
             ).execute()
 
-        # Prepare row data exactly in header order
-        values = [[data.get(col, "") for col in header]]
+        # Prepare rows: one row per contact with lead-level data repeated
+        rows = []
+        for contact in contacts:
+            row_data = []
+            for col in header:
+                # For contact-specific columns, take from contact dict
+                if col in ["Point of Contact", "Email", "Phone", "Role"]:
+                    if col == "Role":
+                        # Roles list joined as comma-separated string
+                        value = ", ".join(contact.get("role", [])) if contact.get("role") else ""
+                    else:
+                        # Other contact fields
+                        key = col.lower().replace(" ", "_").replace("'", "").replace("[yes/no]", "").strip()
+                        # fallback to direct mapping keys if necessary
+                        if col == "Point of Contact":
+                            key = "contact_person"
+                        elif col == "Email":
+                            key = "email"
+                        elif col == "Phone":
+                            key = "phone"
+                        value = contact.get(key, "")
+                else:
+                    # For other fields, take from lead_data dictionary
+                    value = lead_data.get(col, "")
 
-        # Debug print lengths (optional)
-        st.write(f"Header length: {len(header)}")
-        st.write(f"Row length: {len(values[0])}")
+                row_data.append(value)
+            rows.append(row_data)
 
-        # Append data starting from row 2 (below header)
+        # Debug print
+        st.write(f"Appending {len(rows)} rows with {len(header)} columns each")
+
+        # Append all rows at once starting from row 2
         append_result = sheet.values().append(
             spreadsheetId=SPREADSHEET_ID,
             range=f"{SHEET_NAME}!A2",
             valueInputOption='RAW',
             insertDataOption='INSERT_ROWS',
-            body={'values': values}
+            body={'values': rows}
         ).execute()
 
         return append_result
@@ -567,18 +591,14 @@ if st.button("Submit Form"):
     
     msds_link = upload_file_to_drive(msds_file) if commodity_type == "DG" and msds_file else "No"
 
-    summary = {
+    lead_data = {
         "Company Name": company_name,
-        "Point of Contact": contact_person,
-        "Email": email,
-        "Phone": phone,
-        "Role": ", ".join(role) if isinstance(role, list) else role,
         "Location Constraints": location_constraint,
         "Selected Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
         "Commodity Name": commodity_name,
         "DG Class": ", ".join(dg_class_selected) if isinstance(dg_class_selected, list) else dg_class_selected,
-        "MSDS Uploaded": upload_file_to_drive(msds_file) if msds_file else "No",
+        "MSDS Uploaded": msds_link,
         "Storage Type": storage_type,
         "Specific Temperature (°C)": required_temperature if required_temperature else "N/A",
         "Where is the Cargo now": cargo_location,
@@ -597,25 +617,23 @@ if st.button("Submit Form"):
         "Avg Weight (KG)": average_weight if 'average_weight' in locals() else "N/A",
         "Dimensions (L X W X H in cm)": dimensions if 'dimensions' in locals() else "N/A",
         "Approximate Space Required": approx_space if 'approx_space' in locals() else "N/A",
-        "Packing List File (link)": upload_file_to_drive(packing_list) if packing_list else "No",
+        "Packing List File (link)": packing_list_link,
         "Handling In Required [Yes/No]": handling_in,
         "Handling Out Required [Yes/No]": handling_out,
         "Handling In Type [Loose/Palletised]": handling_in_type,
         "Handling Out Type [Loose/Palletised/Pieces]": handling_out_type,
         "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
-        "Segregation Required": segregation if 'segregation' in locals() else "No",
+        "Segregation Required": segregation_required,
         "No of SKU's": sku_count if 'sku_count' in locals() else "N/A",
         "Total CBM": cbm if 'cbm' in locals() else "N/A",
         "Total Palletes": pallet_qty if 'pallet_qty' in locals() else "N/A",
         "Inventory Charge [Yes/No]": "Yes" if sku_count and sku_count > 5 and (cbm < 5 or pallet_qty < 3) else "No",
-        "Documents Uploaded": ", ".join([upload_file_to_drive(doc) for doc in documents]) if documents else "No"
+        "Documents Uploaded": ", ".join(documents_links) if documents else "No"
     }
 
-    # Append data to Google Sheet
-    st.write("Data to append:", summary)
-    append_result = append_to_google_sheet(summary)
-    st.write("Append result:", append_result)
-    # append_result = append_to_google_sheet(summary)
+    contacts = st.session_state.contacts  # List of dicts with contact info
+
+    # Call your multi-append function that you implement to append all contacts with lead data
+    append_result = append_multiple_contacts_to_google_sheet(lead_data, contacts)
 
     st.success("✅ Form submitted successfully and data saved to Google Sheets!")
-    st.json(summary)
