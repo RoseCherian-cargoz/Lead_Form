@@ -25,6 +25,11 @@ if "contacts" not in st.session_state:
         {"id": str(uuid.uuid4()), "contact_person": "", "email": "", "phone": "", "role": []}
     ]
 
+# ✅ Fix: Ensure all contacts have a unique ID (for backward compatibility)
+for contact in st.session_state.contacts:
+    if "id" not in contact:
+        contact["id"] = str(uuid.uuid4())
+
 # Add new contact
 def add_contact():
     st.session_state.contacts.append(
@@ -82,17 +87,7 @@ for idx, contact in enumerate(st.session_state.contacts):
                     "Phone", value=contact["phone"], key=f"{key_prefix}_phone"
                 )
             with col4:
-                contact["role"] = st.multiselect(
-                    "Role", options=contact_roles, default=contact["role"], key=f"{key_prefix}_role"
-                )
-
-            if st.button("🗑️ Remove Contact", key=f"{key_prefix}_remove"):
-                delete_contact(contact["id"])
-                st.experimental_rerun()
-
-# Button to add new contact
-if st.button("➕ Add Another Contact"):
-    add_contact()
+                contact["role"] = st.multiselect
 
 
 # ------------------- SECTION 2: Storage Needs -------------------
