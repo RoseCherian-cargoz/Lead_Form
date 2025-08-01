@@ -446,16 +446,15 @@ def append_to_google_sheet(data: dict):
             "Documents Uploaded"
         ]
 
-        # Check if header exists
+        # Check if header exists and matches exactly in the first row
         result = sheet.values().get(
             spreadsheetId=SPREADSHEET_ID,
-            range=SHEET_NAME
+            range=f"{SHEET_NAME}!A1:AO1"  # AO = 41st column approx.
         ).execute()
 
         existing_header = result.get('values', [])
 
-        # If header is missing, insert it
-        if not existing_header:
+        if not existing_header or existing_header[0] != header:
             sheet.values().update(
                 spreadsheetId=SPREADSHEET_ID,
                 range=f"{SHEET_NAME}!A1",
@@ -463,13 +462,17 @@ def append_to_google_sheet(data: dict):
                 body={'values': [header]}
             ).execute()
 
-        # Prepare row in header order
+        # Prepare row data exactly in header order
         values = [[data.get(col, "") for col in header]]
 
-        # Append data
+        # Debug print lengths (optional)
+        st.write(f"Header length: {len(header)}")
+        st.write(f"Row length: {len(values[0])}")
+
+        # Append data starting from row 2 (below header)
         append_result = sheet.values().append(
             spreadsheetId=SPREADSHEET_ID,
-            range=f"{SHEET_NAME}!A1",  # use just the sheet name
+            range=f"{SHEET_NAME}!A2",
             valueInputOption='RAW',
             insertDataOption='INSERT_ROWS',
             body={'values': values}
