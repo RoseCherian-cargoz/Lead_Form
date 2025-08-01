@@ -165,11 +165,24 @@ st.header("✅ Section 3: Space Assessment")
 
 # --- Package Type Selection ---
 package_types = ["Crates", "Boxes", "Bags", "Oversized/Overweight", "Pallets", "Other"]
-selected_package_types = st.multiselect(
-    "Package Type(s)",
-    options=package_types,
-    help="Select all applicable package types"
-)
+space_units = ["CBM", "SQFT", "Pallets", "Not Sure"]
+
+# --- Row 1: Package Type & Space Unit ---
+row1_col1, row1_col2 = st.columns(2)
+
+with row1_col1:
+    selected_package_types = st.multiselect(
+        "Package Type(s)",
+        options=package_types,
+        help="Select all applicable package types"
+    )
+
+with row1_col2:
+    space_unit = st.selectbox(
+        "Space Unit",
+        options=space_units,
+        help="Choose unit of space measurement"
+    )
 
 # --- Number of Packages ---
 num_packages_dict = {}
@@ -180,32 +193,29 @@ for package in selected_package_types:
         key=f"num_{package.lower().replace('/', '_')}"
     )
 
-# --- Show weight, dimensions, space required only for certain types ---
+# --- Row 2: Show only if detailed info required ---
 space_types = ["Crates", "Bags", "Oversized/Overweight", "Pallets"]
 if any(pt in selected_package_types for pt in space_types):
     st.subheader("📏 Detailed Space Requirements")
+    row2_col1 = st.container()
 
-    average_weight = st.text_input(
-        "Average Weight (kg)",
-        help="Enter average weight of the packages"
-    )
+    with row2_col1:
+        average_weight = st.text_input(
+            "Average Weight (kg)",
+            help="Enter average weight of the packages"
+        )
 
-    dimensions = st.text_input(
-        "Dimensions (L x W x H in cm)",
-        help="Enter typical dimensions of packages"
-    )
+        dimensions = st.text_input(
+            "Dimensions (L x W x H in cm)",
+            help="Enter typical dimensions of packages"
+        )
 
-    approx_space = st.text_input(
-        "Approximate Space Required",
-        help="Rough estimate of total space needed"
-    )
-
-# --- Space Unit ---
-space_unit = st.selectbox(
-    "Space Unit",
-    options=["CBM", "SQFT", "Pallets", "Not Sure"],
-    help="Choose unit of space measurement"
-)
+        approx_space = st.text_input(
+            "Approximate Space Required",
+            help="Rough estimate of total space needed"
+        )
+#------Packing list--------
+packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf","doc","jpg","png"],help="Upload packing list document")
 
 # --- Handling In/Out ---
 col_in, col_out = st.columns(2)
