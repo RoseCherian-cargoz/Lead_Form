@@ -34,11 +34,13 @@ if st.button("➕ Add Another Contact"):
 # ------------------- SECTION 2: Storage Details -------------------
 st.header("✅ Section 2: Storage Needs")
 
-location_constraint = st.selectbox(
-    "Do you have any location constraints?",
-    options=["No", "Yes"],
-    help="Select Yes if you want to restrict locations"
-)
+row1_col1, row1_col2 = st.columns(2)
+with row1_col1:
+    location_constraint = st.selectbox(
+        "Do you have any location constraints?",
+        options=["No", "Yes"],
+        help="Select Yes if you want to restrict locations"
+    )
 uae_industrial_areas = [
     "Jafza", "Al Quoz", "Al Quasis", "DIP", "DIP1", "DIP2", "DIC", "Ras Al Khor", "Sharjah Industrial Area",
     "Umm Ramool", "Emirates Industrial City", "Ad Dar al Baida", "Al Sulay", "Al Khabaisi", "Jebel Ali",
@@ -47,14 +49,15 @@ uae_industrial_areas = [
     "Al Ruwayyah", "International City"
 ]
 
-if location_constraint == "Yes":
-    storage_location = st.multiselect(
-        "Select location(s) in UAE industrial areas",
-        options=uae_industrial_areas,
-        help="Choose one or more locations"
-    )
-else:
-    storage_location = []
+with row1_col2:
+    if location_constraint == "Yes":
+        storage_location = st.multiselect(
+            "Select location(s) in UAE industrial areas",
+            options=uae_industrial_areas,
+            help="Choose one or more locations"
+        )
+    else:
+        storage_location = []
 
 commodity_types = [
     "Raw & Finished Food",
@@ -68,103 +71,95 @@ commodity_types = [
     "Non-DG Chemical"
 ]
 
-commodity_type = st.selectbox(
-    "Commodity Type",
-    options=commodity_types,
-    help="Select the type of commodity"
-)
-
-commodity_name = ""
-if commodity_type:
+row2_col1, row2_col2 = st.columns(2)
+with row2_col1:
+    commodity_type = st.selectbox(
+        "Commodity Type",
+        options=commodity_types,
+        help="Select the type of commodity",
+        key="commodity_type"
+    )
+with row2_col2:
     commodity_name = st.text_input(
         "Commodity Name",
         help="Specify the exact commodity name or details"
     )
 
-# DG Class multi-select (only if Commodity Type == DG)
-if commodity_type == "DG":
-    dg_classes = [
-        "Class 1 Explosives",
-        "Class 2 Gases",
-        "Class 3 Flammable Liquids",
-        "Class 4 Flammable Solids",
-        "Class 5 Oxidizing Substances",
-        "Class 6 Toxic and Infectious Substances",
-        "Class 7 Radioactive Material",
-        "Class 8 Corrosives",
-        "Class 9 Miscellaneous Dangerous Goods"
-    ]
+# Row 3: DG Class (spans full width if visible), Storage Type and Temperature
+if st.session_state.get("commodity_type") == "DG":
+    st.markdown("""
+        <div style="background-color:#ffcccc; border:2px solid red; padding:10px; border-radius:5px;">
+        ⚠️ <b>DG selected:</b> Please upload the MSDS document for safety compliance.
+        </div>
+    """, unsafe_allow_html=True)
     dg_class_selected = st.multiselect(
         "DG Class",
-        options=dg_classes,
+        options=[
+            "Class 1 Explosives", "Class 2 Gases", "Class 3 Flammable Liquids", "Class 4 Flammable Solids",
+            "Class 5 Oxidizing Substances", "Class 6 Toxic and Infectious Substances", "Class 7 Radioactive Material",
+            "Class 8 Corrosives", "Class 9 Miscellaneous Dangerous Goods"
+        ],
         help="Select DG hazard classes"
+    )
+    msds_file = st.file_uploader(
+        "Upload MSDS Document", type=["pdf", "docx", "jpg", "png"],
+        key="msds_uploader", help="Upload Material Safety Data Sheet for Dangerous Goods"
     )
 else:
     dg_class_selected = []
 
 # Storage Type dropdown with specified options
-storage_types = [
-    "NON AC",
-    "AC",
-    "Chiller",
-    "Freezer",
-    "Open Yard",
-    "Other"
-]
-
-storage_type = st.selectbox(
-    "Storage Type",
-    options=storage_types,
-    help="Choose the type of storage environment"
-)
-
-# Specific Temperature input appears conditionally
-required_temperature = None
-if storage_type in ["AC", "Chiller", "Freezer", "Other"]:
-    required_temperature = st.text_input(
-        "Specific Temperature (°C)",
-        help="Enter the required storage temperature"
+row3_col1, row3_col2 = st.columns(2)
+with row3_col1:
+    storage_type = st.selectbox(
+        "Storage Type",
+        options=["NON AC", "AC", "Chiller", "Freezer", "Open Yard", "Other"],
+        help="Choose the type of storage environment"
     )
+with row3_col2:
+    required_temperature = None
+    if storage_type in ["AC", "Chiller", "Freezer", "Other"]:
+        required_temperature = st.text_input(
+            "Specific Temperature (°C)",
+            help="Enter the required storage temperature"
+        )
 
-
-
-cargo_location_options = [
-    "Mainland",
-    "Freezone",
-    "On the way to UAE",
-    "Another WH",
-    "Cargo in Procurement Stage"
-]
-
-cargo_location = st.selectbox(
-    "Where is the cargo now?",
-    options=cargo_location_options,
-    help="Select current cargo location"
-)
-
-# Comment field always shown after cargo location selection
+# Row 4: Cargo Location
+row4_col1, _ = st.columns([1, 1])
+with row4_col1:
+    cargo_location = st.selectbox(
+        "Where is the cargo now?",
+        options=["Mainland", "Freezone", "On the way to UAE", "Another WH", "Cargo in Procurement Stage"],
+        help="Select current cargo location"
+    )
+# Row 5: Cargo location comment (full width)
 cargo_location_comment = st.text_area(
     "Comments about cargo location",
     help="Provide any additional details"
 )
 
-# Risk factor checkbox
-risk_factor = st.checkbox("Any known risk factor with the commodity?")
-
-# If risk factor is checked, show comment field
-risk_factor_comment = ""
-if risk_factor:
-    risk_factor_comment = st.text_area(
-        "Risk Factor Comments",
-        help="Provide details of the risk factors"
+# Row 6: Risk Factor
+if st.checkbox("❗ Any known risk factor with the commodity?", key="risk_checkbox"):
+    st.markdown(
+        '<p style="color: red;"><b>Risk Factor Comments</b></p>',
+        unsafe_allow_html=True
     )
+    risk_factor_comment = st.text_area(
+        "Describe the risk factor(s)",
+        help="Provide details of the risk factors",
+        key="risk_comment"
+    )
+else:
+    risk_factor_comment = ""
 
-# Expected Start Date
-expected_start = st.date_input(
-    "Expected Start Date",
-    min_value=date.today(),
-    help="Select expected start date"
-)
+# Row 7: Expected Start Date
+row7_col1, _ = st.columns([1, 1])
+with row7_col1:
+    expected_start = st.date_input(
+        "Expected Start Date",
+        min_value=date.today(),
+        help="Select expected start date"
+    )
 # ------------------- SECTION 3: Handling Requirements -------------------
 st.header("🟧 Section 3: Handling Requirements")
 col_1,col_2=st.columns(2)
