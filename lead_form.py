@@ -404,6 +404,35 @@ if handling_out == "Yes":
                 ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
                 </div>
             """, unsafe_allow_html=True)
+
+    # --- Additional Tracking Output Style ---
+    output_method = st.selectbox(
+        "How will you take out the items later?",
+        ["Loose", "Palletised", "Pieces"],
+        key="tracking_out_method"
+    )
+
+    if output_method == "Palletised":
+        st.markdown("""
+            <div style="background-color:#fff3cd; border-left:6px solid #ffc107; padding:10px; border-radius:4px;">
+            🟡 <strong>Inventory will be tracked per pallet only.</strong> Boxes inside will not be tracked.
+            </div>
+        """, unsafe_allow_html=True)
+    elif output_method == "Pieces":
+        st.markdown("""
+            <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+            ❗ <strong>Piece-picking requires a fulfilment centre.</strong><br>
+            If volume &lt; 40 CBM, recommend storing 30 CBM with us and the rest in a fulfilment centre.
+            </div>
+        """, unsafe_allow_html=True)
+
+    # --- Tracking Details Required ---
+    tracking_details = st.multiselect(
+        "What tracking details do you need?",
+        ["Lot Number", "SKU Value", "Expiry Date"],
+        key="tracking_details"
+    )
+
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents", accept_multiple_files=True,help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record.")
