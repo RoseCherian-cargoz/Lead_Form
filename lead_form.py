@@ -401,23 +401,42 @@ def append_to_google_sheet(data: dict):
             "Point of Contact",
             "Email",
             "Phone",
-            "Storage Location",
+            "Role",
+            "Location Constraints",
+            "Selected Location",
             "Commodity Type",
-            "Commodity",
+            "Commodity Name",
+            "DG Class",
             "MSDS Uploaded",
             "Storage Type",
-            "Required Temperature (°C)",
-            "Package Type",
-            "Billing Unit",
-            "Shipment Location",
+            "Specific Temperature (°C)",
+            "Where is the Cargo now",
+            "Comments on cargo location",
+            "Known Risk Factor [Yes/No]",
+            "Risk Factor Comments",
             "Expected Start Date",
-            "Handling In",
-            "Handling Out",
-            "Number of SKUs",
+            "Package Type(s)",
+            "Space Unit",
+            "Number of Crates (if selectd)",
+            "Number of Boxes (if selectd)",
+            "Number of Bags (if selectd)",
+            "Number of Oversized/Overweight (if selectd)",
+            "Number of Pallets (if selectd)",
+            "Number of Other (if selectd)",
+            "Avg Weight (KG)",
+            "Dimensions (L X W X H in cm)",
+            "Approximate Space Required",
+            "Packing List File (link)",
+            "Handling In Required [Yes/No]",
+            "Handling Out Required []Yes/No",
+            "Handling In Type [Loose/Palletised]",
+            "Handling Out Type [Loose/Palletised/Pieces]",
             "Mixed SKUs",
             "Segregation Required",
-            "Tracking Method",
-            "Packing List Uploaded",
+            "No of SKU's",
+            "Total CBM",
+            "Total Palletes",
+            "Inventory Charge [Yes/No]"
             "Documents Uploaded"
         ]
 
@@ -460,41 +479,58 @@ def append_to_google_sheet(data: dict):
 
 # ------------------- Submit Button -------------------
 if st.button("Submit Form"):
-    segregation_required = "Yes" if mixed_skus == "Yes" else "No"
-    packing_list_link = upload_file_to_drive(packing_list) if packing_list else ""
+    segregation_required = "Yes" if mixed_skus == "Yes" and segregation == "Yes" else "No"
+    packing_list_link = upload_file_to_drive(packing_list) if packing_list else "No"
     documents_links = []
     if documents:
         for doc in documents:
-            documents_links.append(upload_file_to_drive(doc))
-    msds_link = upload_file_to_drive(msds_file) if commodity_type == "DG" and msds_file else ""
+            uploaded_link = upload_file_to_drive(doc)
+            documents_links.append(uploaded_link)
+    
+    msds_link = upload_file_to_drive(msds_file) if commodity_type == "DG" and msds_file else "No"
 
     summary = {
         "Company Name": company_name,
         "Point of Contact": contact_person,
         "Email": email,
         "Phone": phone,
-        "Storage Location": ", ".join(storage_location),
+        "Role": role,
+        "Location Constraints": location_constraints,
+        "Selected Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
-        "Commodity": commodity,
-        "MSDS Uploaded": msds_link if msds_link else "No",
+        "Commodity Name": commodity,
+        "DG Class": dg_class if commodity_type == "DG" else "N/A",
+        "MSDS Uploaded": upload_file_to_drive(msds_file) if msds_file else "No",
         "Storage Type": storage_type,
-        "Required Temperature (°C)": required_temperature if required_temperature else "N/A",
-        "Package Type": package_type,
-        "Billing Unit": billing_unit,
-        "Shipment Location": shipment_location,
+        "Specific Temperature (°C)": required_temperature if required_temperature else "N/A",
+        "Where is the Cargo now": cargo_location,
+        "Comments on cargo location": cargo_location_comment,
+        "Known Risk Factor [Yes/No]": risk_factor,
+        "Risk Factor Comments": risk_comment if risk_factor == "Yes" else "N/A",
         "Expected Start Date": expected_start.strftime("%Y-%m-%d"),
-        "Handling In": handling_in,
-        "Handling Out": handling_out,
-        "Number of SKUs": sku_count if 'sku_count' in locals() else "N/A",
-        "Mixed SKUs": mixed_skus,
-        "Segregation Required": segregation_required,
-        # "Tracking Method": tracking_method,
-        "Tracking Method": ", ".join(tracking_method),
-        # "Tracking Method": ", ".join(tracking_method) if tracking_method else "N/A",
-        # "Packing List Uploaded": "Yes" if packing_list else "No",
-        # "Documents Uploaded": len(documents) if documents else 0,
-        "Packing List Uploaded": packing_list_link if packing_list_link else "No",
-        "Documents Uploaded": ", ".join(documents_links) if documents_links else "No"
+        "Package Type(s)": ", ".join(selected_package_types),
+        "Space Unit": space_unit,
+        "Number of Crates (if selectd)": num_packages_dict.get("Crates", "N/A"),
+        "Number of Boxes (if selectd)": num_packages_dict.get("Boxes", "N/A"),
+        "Number of Bags (if selectd)": num_packages_dict.get("Bags", "N/A"),
+        "Number of Oversized/Overweight (if selectd)": num_packages_dict.get("Oversized/Overweight", "N/A"),
+        "Number of Pallets (if selectd)": num_packages_dict.get("Pallets", "N/A"),
+        "Number of Other (if selectd)": num_packages_dict.get("Other", "N/A"),
+        "Avg Weight (KG)": average_weight if 'average_weight' in locals() else "N/A",
+        "Dimensions (L X W X H in cm)": dimensions if 'dimensions' in locals() else "N/A",
+        "Approximate Space Required": approx_space if 'approx_space' in locals() else "N/A",
+        "Packing List File (link)": upload_file_to_drive(packing_list) if packing_list else "No",
+        "Handling In Required [Yes/No]": handling_in,
+        "Handling Out Required []Yes/No": handling_out,
+        "Handling In Type [Loose/Palletised]": handling_in_type,
+        "Handling Out Type [Loose/Palletised/Pieces]": handling_out_type,
+        "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
+        "Segregation Required": segregation if 'segregation' in locals() else "No",
+        "No of SKU's": sku_count if 'sku_count' in locals() else "N/A",
+        "Total CBM": cbm if 'cbm' in locals() else "N/A",
+        "Total Palletes": pallet_qty if 'pallet_qty' in locals() else "N/A",
+        "Inventory Charge [Yes/No]": "Yes" if sku_count and sku_count > 5 and (cbm < 5 or pallet_qty < 3) else "No",
+        "Documents Uploaded": ", ".join([upload_file_to_drive(doc) for doc in documents]) if documents else "No"
     }
 
     # Append data to Google Sheet
