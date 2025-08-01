@@ -10,10 +10,11 @@ st.set_page_config(page_title="Storage Requirement Form", layout="centered")
 st.title("📦 Lead Form")
 
 # ------------------- SECTION 1: Contact Details -------------------
-import streamlit as st
-
 st.header("🟩 Section 1: Contact Details")
 contact_roles = ["Owner", "Accountant", "Ops", "Commercial"]
+
+# Company Name input (only once)
+company_name = st.text_input("Company Name", value="", placeholder="Enter company name")
 
 # Initialize contacts list in session_state if not present
 if "contacts" not in st.session_state:
@@ -23,8 +24,6 @@ if "contacts" not in st.session_state:
 
 def add_contact():
     st.session_state.contacts.append({"contact_person": "", "email": "", "phone": "", "role": []})
-
-st.button("➕ Add Another Contact", on_click=add_contact)
 
 # Render all contacts fields dynamically
 for idx, contact in enumerate(st.session_state.contacts):
@@ -61,8 +60,14 @@ for idx, contact in enumerate(st.session_state.contacts):
         help="Select one or more roles"
     )
 
-# You can now access all contacts in st.session_state.contacts
+# Add button BELOW all contact entries
+if st.button("➕ Add Another Contact"):
+    add_contact()
+
+# For debugging or form submission, show all data
+st.write("Company Name:", company_name)
 st.write("All contacts data:", st.session_state.contacts)
+
 
 # ------------------- SECTION 2: Storage Needs -------------------
 st.header("✅ Section 2: Storage Needs")
