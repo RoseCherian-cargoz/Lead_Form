@@ -439,7 +439,7 @@ def append_to_google_sheet(data: dict):
             "No of SKU's",
             "Total CBM",
             "Total Palletes",
-            "Inventory Charge [Yes/No]"
+            "Inventory Charge [Yes/No]",
             "Documents Uploaded"
         ]
 
@@ -497,7 +497,7 @@ if st.button("Submit Form"):
         "Point of Contact": contact_person,
         "Email": email,
         "Phone": phone,
-        "Role": role,
+        "Role": ", ".join(role) if isinstance(role, list) else role,,
         "Location Constraints": location_constraint,
         "Selected Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
