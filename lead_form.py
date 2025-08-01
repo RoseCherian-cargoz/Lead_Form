@@ -251,6 +251,7 @@ if handling_in == "Yes" and handling_out == "No":
 # You can now use `handling_out` to conditionally display Section 4
 if handling_out == "Yes":
     st.markdown("✅ Proceed to Section 4")
+
 #---------------Section 4 - Inventory and Tracking--------------
 st.header("✅ Section 4: Inventory & Tracking")
 
@@ -258,14 +259,14 @@ st.header("✅ Section 4: Inventory & Tracking")
 col1, col2 = st.columns(2)
 
 with col1:
-    handling_in = st.selectbox(
+    handling_in_type = st.selectbox(
         "Handling In Type",
         ["Loose", "Palletized"],
         key="handling_in"
     )
 
 with col2:
-    handling_out = st.selectbox(
+    handling_out_type = st.selectbox(
         "Handling Out Type",
         ["Loose", "Palletized", "Pieces"],
         key="handling_out"
