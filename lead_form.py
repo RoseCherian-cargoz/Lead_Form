@@ -107,6 +107,7 @@ if st.session_state.get("commodity_type") == "DG":
     )
 else:
     dg_class_selected = []
+    msds_file = None
 
 # Storage Type dropdown with specified options
 row3_col1, row3_col2 = st.columns(2)
