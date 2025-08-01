@@ -93,7 +93,7 @@ for idx, contact in enumerate(st.session_state.contacts):
 
             if st.button("🗑️ Remove Contact", key=f"{key_prefix}_remove"):
                 delete_contact(contact["id"])
-                st.experimental_rerun()
+                st.rerun()
 
 # Button to add new contact
 if st.button("➕ Add Another Contact"):
