@@ -150,6 +150,7 @@ if st.checkbox("❗ Any known risk factor with the commodity?", key="risk_checkb
         help="Provide details of the risk factors",
         key="risk_comment"
     )
+    risk_factor = "Yes"
 else:
     risk_factor = "No"
     risk_factor_comment = ""
