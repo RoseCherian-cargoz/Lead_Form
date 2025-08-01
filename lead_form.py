@@ -11,25 +11,46 @@ st.title("📦 Lead Form")
 
 # ------------------- SECTION 1: Contact Details -------------------
 st.header("🟩 Section 1: Contact Details")
+
 contact_roles = ["Owner", "Accountant", "Ops", "Commercial"]
-col1, col2 = st.columns(2)
 
-with col1:
-    company_name = st.text_input("Company Name", value="", placeholder="Enter company name")
-                                # help="Company name fetched from the landing page")
-    contact_person = st.text_input("Point of Contact", value="", placeholder="Enter contact person name")
-                                #   help="Contact person for this lead-details fetched from landing page")
+# Initialize session state for contact count and contact data if not already set
+if "contact_count" not in st.session_state:
+    st.session_state.contact_count = 1
 
-with col2:
-    email = st.text_input("Email", value="", placeholder="Enter email address")
-                        #  help="Email address of the contact-details fetched from landing page")
-    phone = st.text_input("Phone", value="", placeholder="Enter phone number")
-                        #  help="Phone number of the contact-details fetched from landing page")
+def add_contact():
+    st.session_state.contact_count += 1
 
-role = st.multiselect("Role", options=contact_roles, help="Select one or more roles")
+st.button("➕ Add Another Contact", on_click=add_contact)
 
-if st.button("➕ Add Another Contact"):
-    st.info("Functionality to add multiple contacts can be implemented dynamically using session_state or a form loop.")
+# Prepare containers to store all contacts info
+contacts_data = []
+
+# Render input fields for each contact dynamically
+for i in range(st.session_state.contact_count):
+    st.markdown(f"### Contact #{i + 1}")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        company_name = st.text_input(f"Company Name #{i + 1}", value="", placeholder="Enter company name", key=f"company_name_{i}")
+        contact_person = st.text_input(f"Point of Contact #{i + 1}", value="", placeholder="Enter contact person name", key=f"contact_person_{i}")
+
+    with col2:
+        email = st.text_input(f"Email #{i + 1}", value="", placeholder="Enter email address", key=f"email_{i}")
+        phone = st.text_input(f"Phone #{i + 1}", value="", placeholder="Enter phone number", key=f"phone_{i}")
+
+    role = st.multiselect(f"Role #{i + 1}", options=contact_roles, key=f"role_{i}", help="Select one or more roles")
+
+    contacts_data.append({
+        "Company Name": company_name,
+        "Point of Contact": contact_person,
+        "Email": email,
+        "Phone": phone,
+        "Role": role
+    })
+
+# Example: show all contacts data below for debugging
+st.write("All contacts data:", contacts_data)
 
 # ------------------- SECTION 2: Storage Needs -------------------
 st.header("✅ Section 2: Storage Needs")
