@@ -495,7 +495,7 @@ if st.button("Submit Form"):
         "Email": email,
         "Phone": phone,
         "Role": role,
-        "Location Constraints": location_constraints,
+        "Location Constraints": location_constraint,
         "Selected Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
         "Commodity Name": commodity,
