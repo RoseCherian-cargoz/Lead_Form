@@ -172,7 +172,7 @@ if st.session_state.get("commodity_type") == "DG":
     )
     msds_file = st.file_uploader(
         "Upload MSDS Document", type=["pdf", "docx", "jpg", "png"],
-        key="msds_uploader", help="Upload Material Safety Data Sheet for Dangerous Goods"
+        key="msds_uploader", help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record."
     )
 else:
     dg_class_selected = []
@@ -290,7 +290,7 @@ if any(pt in selected_package_types for pt in space_types):
             help="Rough estimate of total space needed"
         )
 #------Packing list--------
-packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf","doc","jpg","png"],help="Upload packing list document")
+packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf","doc","jpg","png"],help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record")
 
 # --- Handling In/Out ---
 col_in, col_out = st.columns(2)
@@ -413,7 +413,7 @@ if sku_count and sku_count > 5:
 
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
-documents = st.file_uploader("Upload Documents", accept_multiple_files=True,help="Required Documents:\n1. Emirates ID\n2. VAT Certificate\n3. Trade License")
+documents = st.file_uploader("Upload Documents", accept_multiple_files=True,help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record.")
 #-----------------------------------------------------------------------------------------
 
 from google.oauth2 import service_account
