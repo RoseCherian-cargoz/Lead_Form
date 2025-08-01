@@ -443,7 +443,7 @@ def append_to_google_sheet(data: dict):
             "Total CBM",
             "Total Palletes",
             "Inventory Charge [Yes/No]",
-            "Documents Uploaded",
+            "Documents Uploaded"
         ]
 
         # Check if header exists
@@ -505,7 +505,7 @@ if st.button("Submit Form"):
         "Selected Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
         "Commodity Name": commodity_name,
-        "DG Class": ", ".join(dg_class_selected) if commodity_type == "DG" else "N/A",
+        "DG Class": ", ".join(dg_class_selected) if isinstance(dg_class_selected, list) else dg_class_selected,
         "MSDS Uploaded": upload_file_to_drive(msds_file) if msds_file else "No",
         "Storage Type": storage_type,
         "Specific Temperature (°C)": required_temperature if required_temperature else "N/A",
