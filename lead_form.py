@@ -469,7 +469,7 @@ def append_to_google_sheet(data: dict):
         # Append data
         append_result = sheet.values().append(
             spreadsheetId=SPREADSHEET_ID,
-            range=SHEET_NAME,  # use just the sheet name
+            range=f"{SHEET_NAME}!A1",  # use just the sheet name
             valueInputOption='RAW',
             insertDataOption='INSERT_ROWS',
             body={'values': values}
