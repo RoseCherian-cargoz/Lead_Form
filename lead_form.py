@@ -322,95 +322,88 @@ if handling_out == "No":
 
 # You can now use `handling_out` to conditionally display Section 4
 if handling_out == "Yes":
-    st.markdown("✅ Proceed to Section 4")
+    #---------------Section 4 - Inventory and Tracking--------------
+    st.header("✅ Section 4: Inventory & Tracking")
 
-#---------------Section 4 - Inventory and Tracking--------------
-st.header("✅ Section 4: Inventory & Tracking")
+    # --- Handling Types ---
+    col1, col2 = st.columns(2)
 
-# --- Handling Types ---
-col1, col2 = st.columns(2)
-
-with col1:
-    handling_in_type = st.selectbox(
-        "Handling In Type",
-        ["Loose", "Palletized"],
-        key="handling_in_type"
-    )
-
-with col2:
-    handling_out_type = st.selectbox(
-        "Handling Out Type",
-        ["Loose", "Palletized", "Pieces"],
-        key="handling_out_type"
-    )
-
-# --- SKU Logic Branches ---
-sku_count = None
-segregation = None
-seg_charges_note = ""
-inventory_charge_warning = ""
-
-# Conditions where SKU question must be asked
-if (handling_in_type == "Loose" and handling_out_type == "Loose") or \
-   (handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]):
-
-    st.subheader("🧩 SKU Details")
-    # Initialize defaults first
- # Initialize defaults first
-    mixed_skus = "No"
-    segregation = "No"
-    if handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]:
-        mixed_skus = st.selectbox(
-            "Are SKUs mixed per pallet?",
-            ["Yes", "No"],
-            key="mixed_skus"
+    with col1:
+        handling_in_type = st.selectbox(
+            "Handling In Type",
+            ["Loose", "Palletized"],
+            key="handling_in_type"
         )
 
-        if mixed_skus == "Yes":
-            segregation = st.selectbox(
-                "Do you need segregation?",
+    with col2:
+        handling_out_type = st.selectbox(
+            "Handling Out Type",
+            ["Loose", "Palletized", "Pieces"],
+            key="handling_out_type"
+        )
+
+    # --- SKU Logic Branches ---
+    sku_count = None
+    segregation = None
+    seg_charges_note = ""
+    inventory_charge_warning = ""
+
+    if (handling_in_type == "Loose" and handling_out_type == "Loose") or \
+       (handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]):
+
+        st.subheader("🧩 SKU Details")
+        mixed_skus = "No"
+        segregation = "No"
+
+        if handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]:
+            mixed_skus = st.selectbox(
+                "Are SKUs mixed per pallet?",
                 ["Yes", "No"],
-                key="need_segregation"
+                key="mixed_skus"
             )
 
-            if segregation == "Yes":
-                st.markdown("""
-                    <div style="background-color:#fff3cd; border-left:6px solid #ffc107; padding:10px; border-radius:4px;">
-                    ⚠️ <strong>Segregation Charges apply</strong>
-                    </div>
-                """, unsafe_allow_html=True)
+            if mixed_skus == "Yes":
+                segregation = st.selectbox(
+                    "Do you need segregation?",
+                    ["Yes", "No"],
+                    key="need_segregation"
+                )
 
-    sku_count = st.number_input(
-        "Number of SKUs",
-        min_value=1,
-        step=1
-    )
+                if segregation == "Yes":
+                    st.markdown("""
+                        <div style="background-color:#fff3cd; border-left:6px solid #ffc107; padding:10px; border-radius:4px;">
+                        ⚠️ <strong>Segregation Charges apply</strong>
+                        </div>
+                    """, unsafe_allow_html=True)
 
-# --- Inventory Charges Warning ---
-# Show warning if SKU count > 5 and user inputs small volume
+        sku_count = st.number_input(
+            "Number of SKUs",
+            min_value=1,
+            step=1
+        )
 
-if sku_count and sku_count > 5:
-    col_cbm, col_pallets = st.columns(2)
+    # --- Inventory Charges Warning ---
+    if sku_count and sku_count > 5:
+        col_cbm, col_pallets = st.columns(2)
 
-    with col_cbm:
-        try:
-            cbm = float(st.text_input("Total CBM", placeholder="e.g., 4.5"))
-        except:
-            cbm = 0.0
+        with col_cbm:
+            try:
+                cbm = float(st.text_input("Total CBM", placeholder="e.g., 4.5"))
+            except:
+                cbm = 0.0
 
-    with col_pallets:
-        try:
-            pallet_qty = int(st.text_input("Total Pallets", placeholder="e.g., 2"))
-        except:
-            pallet_qty = 0
+        with col_pallets:
+            try:
+                pallet_qty = int(st.text_input("Total Pallets", placeholder="e.g., 2"))
+            except:
+                pallet_qty = 0
 
-    if pallet_qty < 3 or cbm < 5:
-        st.markdown("""
-            <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
-            ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
-            </div>
-        """, unsafe_allow_html=True)
-
+        if pallet_qty < 3 or cbm < 5:
+            st.markdown("""
+                <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+                ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
+                </div>
+            """, unsafe_allow_html=True)
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents", accept_multiple_files=True,help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record.")
