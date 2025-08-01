@@ -10,47 +10,59 @@ st.set_page_config(page_title="Storage Requirement Form", layout="centered")
 st.title("📦 Lead Form")
 
 # ------------------- SECTION 1: Contact Details -------------------
-st.header("🟩 Section 1: Contact Details")
+import streamlit as st
 
+st.header("🟩 Section 1: Contact Details")
 contact_roles = ["Owner", "Accountant", "Ops", "Commercial"]
 
-# Initialize session state for contact count and contact data if not already set
-if "contact_count" not in st.session_state:
-    st.session_state.contact_count = 1
+# Initialize contacts list in session_state if not present
+if "contacts" not in st.session_state:
+    st.session_state.contacts = [
+        {"contact_person": "", "email": "", "phone": "", "role": []}
+    ]
 
 def add_contact():
-    st.session_state.contact_count += 1
+    st.session_state.contacts.append({"contact_person": "", "email": "", "phone": "", "role": []})
 
 st.button("➕ Add Another Contact", on_click=add_contact)
 
-# Prepare containers to store all contacts info
-contacts_data = []
-
-# Render input fields for each contact dynamically
-for i in range(st.session_state.contact_count):
-    st.markdown(f"### Contact #{i + 1}")
+# Render all contacts fields dynamically
+for idx, contact in enumerate(st.session_state.contacts):
+    st.markdown(f"### Contact #{idx + 1}")
     col1, col2 = st.columns(2)
 
     with col1:
-        company_name = st.text_input(f"Company Name #{i + 1}", value="", placeholder="Enter company name", key=f"company_name_{i}")
-        contact_person = st.text_input(f"Point of Contact #{i + 1}", value="", placeholder="Enter contact person name", key=f"contact_person_{i}")
+        st.session_state.contacts[idx]["contact_person"] = st.text_input(
+            f"Point of Contact #{idx + 1}",
+            value=st.session_state.contacts[idx]["contact_person"],
+            key=f"contact_person_{idx}",
+            placeholder="Enter contact person name"
+        )
 
     with col2:
-        email = st.text_input(f"Email #{i + 1}", value="", placeholder="Enter email address", key=f"email_{i}")
-        phone = st.text_input(f"Phone #{i + 1}", value="", placeholder="Enter phone number", key=f"phone_{i}")
+        st.session_state.contacts[idx]["email"] = st.text_input(
+            f"Email #{idx + 1}",
+            value=st.session_state.contacts[idx]["email"],
+            key=f"email_{idx}",
+            placeholder="Enter email address"
+        )
+        st.session_state.contacts[idx]["phone"] = st.text_input(
+            f"Phone #{idx + 1}",
+            value=st.session_state.contacts[idx]["phone"],
+            key=f"phone_{idx}",
+            placeholder="Enter phone number"
+        )
 
-    role = st.multiselect(f"Role #{i + 1}", options=contact_roles, key=f"role_{i}", help="Select one or more roles")
+    st.session_state.contacts[idx]["role"] = st.multiselect(
+        f"Role #{idx + 1}",
+        options=contact_roles,
+        default=st.session_state.contacts[idx]["role"],
+        key=f"role_{idx}",
+        help="Select one or more roles"
+    )
 
-    contacts_data.append({
-        "Company Name": company_name,
-        "Point of Contact": contact_person,
-        "Email": email,
-        "Phone": phone,
-        "Role": role
-    })
-
-# Example: show all contacts data below for debugging
-st.write("All contacts data:", contacts_data)
+# You can now access all contacts in st.session_state.contacts
+st.write("All contacts data:", st.session_state.contacts)
 
 # ------------------- SECTION 2: Storage Needs -------------------
 st.header("✅ Section 2: Storage Needs")
