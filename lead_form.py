@@ -279,12 +279,12 @@ seg_charges_note = ""
 inventory_charge_warning = ""
 
 # Conditions where SKU question must be asked
-if (handling_in == "Loose" and handling_out == "Loose") or \
-   (handling_in == "Palletized" and handling_out in ["Loose", "Palletized"]):
+if (handling_in_type == "Loose" and handling_out_type == "Loose") or \
+   (handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]):
 
     st.subheader("🧩 SKU Details")
 
-    if handling_in == "Palletized" and handling_out in ["Loose", "Palletized"]:
+    if handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]:
         mixed_skus = st.selectbox(
             "Are SKUs mixed per pallet?",
             ["Yes", "No"],
