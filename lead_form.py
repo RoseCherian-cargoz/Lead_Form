@@ -102,9 +102,12 @@ for idx, contact in enumerate(st.session_state.contacts):
                     options=contact_roles,
                     default=st.session_state.contacts[idx]["role"],
                     key=f"role_{idx}",
-                    help="Selec
+                    help="Select one or more roles"
+                )
 
-
+# Button to add new contact
+if st.button("➕ Add Another Contact"):
+    add_contact()
 
 # ------------------- SECTION 2: Storage Needs -------------------
 st.header("✅ Section 2: Storage Needs")
