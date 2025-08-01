@@ -286,7 +286,10 @@ if (handling_in_type == "Loose" and handling_out_type == "Loose") or \
    (handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]):
 
     st.subheader("🧩 SKU Details")
-
+    # Initialize defaults first
+ # Initialize defaults first
+    mixed_skus = "No"
+    segregation = "No"
     if handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]:
         mixed_skus = st.selectbox(
             "Are SKUs mixed per pallet?",
