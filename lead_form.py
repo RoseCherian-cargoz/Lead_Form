@@ -451,7 +451,8 @@ elif output_method == "Pieces":
     st.markdown("""
         <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
         ❗ <strong>Piece-picking requires a fulfilment centre.</strong><br>
-        If volume &lt; 40 CBM, recommend storing 30 CBM (Box Level) with us and the rest in a fulfilment centre.
+        If volume &lt; 40 CBM, recommend storing 30 CBM (Box Level) with us and the rest in a fulfilment centre.<br><br>
+        ⚠️ <strong>Note:</strong> If piece picking is agreed upon, the <strong>Storage Billing UOM</strong> should be <strong>Pallet</strong>.
         </div>
     """, unsafe_allow_html=True)
 
