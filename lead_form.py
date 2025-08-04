@@ -418,11 +418,11 @@ if handling_out == "Yes":
     # cbm = 0.0
     # pallet_qty = 0
 
-    st.markdown("""
-        <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
-        ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
-        </div>
-    """, unsafe_allow_html=True)
+        st.markdown("""
+            <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+            ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
+            </div>
+        """, unsafe_allow_html=True)
 
     # --- Additional Tracking Output Style ---
     output_method = st.selectbox(
