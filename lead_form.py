@@ -392,27 +392,37 @@ if handling_out == "Yes":
         )
 
     # --- Inventory Charges Warning ---
+    # if sku_count and sku_count > 5:
+    #     col_cbm, col_pallets = st.columns(2)
+
+    #     with col_cbm:
+    #         try:
+    #             cbm = float(st.text_input("Total CBM", placeholder="e.g., 4.5"))
+    #         except:
+    #             cbm = 0.0
+
+    #     with col_pallets:
+    #         try:
+    #             pallet_qty = int(st.text_input("Total Pallets", placeholder="e.g., 2"))
+    #         except:
+    #             pallet_qty = 0
+
+    #     if pallet_qty < 3 or cbm < 5:
+    #         st.markdown("""
+    #             <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+    #             ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
+    #             </div>
+    #         """, unsafe_allow_html=True)
+
     if sku_count and sku_count > 5:
-        col_cbm, col_pallets = st.columns(2)
+    cbm = 0.0
+    pallet_qty = 0
 
-        with col_cbm:
-            try:
-                cbm = float(st.text_input("Total CBM", placeholder="e.g., 4.5"))
-            except:
-                cbm = 0.0
-
-        with col_pallets:
-            try:
-                pallet_qty = int(st.text_input("Total Pallets", placeholder="e.g., 2"))
-            except:
-                pallet_qty = 0
-
-        if pallet_qty < 3 or cbm < 5:
-            st.markdown("""
-                <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
-                ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
-                </div>
-            """, unsafe_allow_html=True)
+    st.markdown("""
+        <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+        ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
+        </div>
+    """, unsafe_allow_html=True)
 
     # --- Additional Tracking Output Style ---
     output_method = st.selectbox(
@@ -541,8 +551,8 @@ def append_multiple_contacts_to_google_sheet(lead_data: dict, contacts: list):
             "Mixed SKUs",
             "Segregation Required",
             "No of SKU's",
-            "Total CBM",
-            "Total Palletes",
+            # "Total CBM",
+            # "Total Palletes",
             "Inventory Charge [Yes/No]",
             "How will you take the items later",
             "What tracking details do you need",
@@ -660,8 +670,8 @@ if st.button("Submit Form"):
         "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
         "Segregation Required": segregation_required,
         "No of SKU's": sku_count if 'sku_count' in locals() else "N/A",
-        "Total CBM": cbm if 'cbm' in locals() else "N/A",
-        "Total Palletes": pallet_qty if 'pallet_qty' in locals() else "N/A",
+        # "Total CBM": cbm if 'cbm' in locals() else "N/A",
+        # "Total Palletes": pallet_qty if 'pallet_qty' in locals() else "N/A",
         "Inventory Charge [Yes/No]": "Yes" if sku_count and sku_count > 5 and (cbm < 5 or pallet_qty < 3) else "No",
         "How will you take the items later":output_method,
         "What tracking details do you need":", ".join(tracking_details),
