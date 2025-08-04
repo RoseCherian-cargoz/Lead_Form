@@ -25,7 +25,7 @@ if "contacts" not in st.session_state:
         {"id": str(uuid.uuid4()), "contact_person": "", "email": "", "phone": "", "role": []}
     ]
 
-# ✅ Fix: Ensure all contacts have a unique ID (for backward compatibility)
+# ✅Ensure all contacts have a unique ID (for backward compatibility)
 for contact in st.session_state.contacts:
     if "id" not in contact:
         contact["id"] = str(uuid.uuid4())
@@ -40,7 +40,27 @@ def add_contact():
 def delete_contact(contact_id):
     st.session_state.contacts = [c for c in st.session_state.contacts if c["id"] != contact_id]
 
-# Render contacts
+# ------------------- CONTACT SECTION BODY -------------------
+# This section dynamically renders contact input fields.
+# Users can:
+#   - Add multiple contacts.
+#   - Remove any non-primary contact.
+#
+# For each contact, the following fields are collected:
+#   - Contact Person Name
+#   - Email Address
+#   - Phone Number
+#   - Role(s): Owner, Accountant, Ops, Commercial
+#
+# Behavior:
+#   - The first contact (index 0) is always shown as "Primary Contact".
+#   - All additional contacts are shown inside expandable sections labeled "Contact #2", "Contact #3", etc.
+#   - Each contact uses a unique `key_prefix` to maintain form state on rerun.
+#   - "Remove Contact" button is available only for non-primary contacts.
+#
+# All contacts are stored in `st.session_state.contacts` as a list of dictionaries.
+# This data structure is later used for submission to Google Sheets or other storage.
+
 for idx, contact in enumerate(st.session_state.contacts):
     key_prefix = contact["id"]  # Unique key for each contact
 
@@ -102,6 +122,7 @@ if st.button("➕ Add Another Contact"):
 st.markdown("---")
 # st.subheader("📬 Notification Preference")
 
+#-------Notification Preference----------------
 notification_method = st.radio(
     "How would you like to be notified?",
     options=["Email", "WhatsApp", "Both"],
@@ -110,6 +131,25 @@ notification_method = st.radio(
 )
 
 # ------------------- SECTION 2: Storage Needs -------------------
+# This section gathers detailed information about the customer's storage requirements.
+# 
+# Features:
+# - Location Constraints: Option to restrict storage to specific UAE industrial areas.
+# - Commodity Details: Select commodity type and provide exact commodity name.
+# - Dangerous Goods (DG) Handling:
+#     - If commodity type is DG, prompt for DG hazard classes selection.
+#     - Show a warning about MSDS document upload for safety compliance.
+#     - Upload field for MSDS document (PDF, DOCX, JPG, PNG).
+# - Storage Environment:
+#     - Choose storage type (e.g., NON AC, AC, Chiller, etc.).
+#     - If applicable, specify the required temperature.
+# - Cargo Location: Select current cargo location with additional comments.
+# - Risk Factor: Checkbox to indicate any known risks with the commodity and space for comments.
+# - Expected Start Date: Date input with restriction to today or later.
+#
+# This section ensures all relevant storage and handling needs are captured to facilitate
+# proper warehouse planning and compliance.
+
 st.header("✅ Section 2: Storage Needs")
 
 row1_col1, row1_col2 = st.columns(2)
@@ -241,7 +281,40 @@ with row7_col1:
         min_value=date.today(),
         help="Select expected start date"
     )
-# ------------------- SECTION 3: Space Assesment -------------------
+# ------------------- SECTION 3: Space Assessment & Inventory Tracking -------------------
+# This section collects detailed information about the storage space requirements
+# and handling/inventory tracking preferences for the lead.
+#
+# Features:
+# - Package Types & Space Units:
+#     - Select one or more package types (Crates, Boxes, Pallets, etc.).
+#     - Choose the unit of space measurement (CBM, SQFT, Pallets, Not Sure).
+#     - Input the number of packages per selected package type.
+# - Detailed Space Requirements:
+#     - If specific package types are selected, additional inputs for average weight,
+#       dimensions, and approximate space required appear.
+# - Packing List Upload:
+#     - File uploader for packing list documents, linked with WhatsApp document handling.
+# - Handling Requirements:
+#     - Radio buttons to specify if Handling In and Handling Out services are required.
+#     - Warning displayed if Handling Out is not selected, indicating inventory tracking limitations.
+# - Inventory & Tracking Section (shown only if Handling Out is 'Yes'):
+#     - Select end customer type (B2B, B2C, Both).
+#     - Select handling types for In and Out (Loose, Palletized, Pieces).
+#     - SKU details input shown based on handling types, including options for mixed SKUs and segregation.
+#     - Conditional display of segregation charge warning.
+# - Inventory Charges Warning:
+#     - Displays a warning if SKU count, CBM quantity, or Pallet quantity exceed defined thresholds.
+# - Tracking Output Method:
+#     - Select how items will be taken out (Loose, Palletised, Pieces).
+#     - Displays contextual notes and warnings based on selected output method,
+#       including a note about storage billing UOM if piece picking is chosen.
+# - Tracking Details:
+#     - Multi-select for additional tracking details needed (Lot Number, SKU Value, Expiry Date).
+#
+# This comprehensive section ensures all relevant details regarding space, handling,
+# and inventory tracking are captured to provide accurate pricing and operational support.
+
 st.header("✅ Section 3: Space Assessment")
 
 # --- Package Type Selection ---
@@ -398,17 +471,6 @@ if handling_out == "Yes":
             min_value=1,
             step=1
         )
-
-    # --- Inventory Charges Warning ---
-    # if sku_count and sku_count > 5:
-    # # cbm = 0.0
-    # # pallet_qty = 0
-
-    #     st.markdown("""
-    #         <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
-    #         ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
-    #         </div>
-    #     """, unsafe_allow_html=True)
     # --- Inventory Charges Warning ---
 cbm_qty = 0
 pallet_qty = 0
