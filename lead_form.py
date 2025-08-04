@@ -393,36 +393,38 @@ if handling_out == "Yes":
 
     # --- Inventory Charges Warning ---
     # if sku_count and sku_count > 5:
-    #     col_cbm, col_pallets = st.columns(2)
+    # # cbm = 0.0
+    # # pallet_qty = 0
 
-    #     with col_cbm:
-    #         try:
-    #             cbm = float(st.text_input("Total CBM", placeholder="e.g., 4.5"))
-    #         except:
-    #             cbm = 0.0
+    #     st.markdown("""
+    #         <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+    #         ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
+    #         </div>
+    #     """, unsafe_allow_html=True)
+    # --- Inventory Charges Warning ---
+cbm_qty = 0
+pallet_qty = 0
 
-    #     with col_pallets:
-    #         try:
-    #             pallet_qty = int(st.text_input("Total Pallets", placeholder="e.g., 2"))
-    #         except:
-    #             pallet_qty = 0
+try:
+    cbm_qty = float(num_packages_dict.get("CBM", 0)) if "CBM" in num_packages_dict else 0
+except:
+    cbm_qty = 0
 
-    #     if pallet_qty < 3 or cbm < 5:
-    #         st.markdown("""
-    #             <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
-    #             ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
-    #             </div>
-    #         """, unsafe_allow_html=True)
+try:
+    pallet_qty = int(num_packages_dict.get("Pallets", 0)) if "Pallets" in num_packages_dict else 0
+except:
+    pallet_qty = 0
 
-    if sku_count and sku_count > 5:
-    # cbm = 0.0
-    # pallet_qty = 0
+# Display warning only if any of the three conditions are met
+if (sku_count and sku_count > 5) or \
+   (space_unit == "CBM" and cbm_qty > 3) or \
+   (space_unit == "Pallets" and pallet_qty > 5):
+    st.markdown("""
+        <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+        ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
+        </div>
+    """, unsafe_allow_html=True)
 
-        st.markdown("""
-            <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
-            ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
-            </div>
-        """, unsafe_allow_html=True)
 
     # --- Additional Tracking Output Style ---
     output_method = st.selectbox(
