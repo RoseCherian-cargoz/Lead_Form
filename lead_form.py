@@ -333,7 +333,15 @@ if handling_out == "No":
 if handling_out == "Yes":
     #---------------Section 4 - Inventory and Tracking--------------
     st.header("✅ Section 4: Inventory & Tracking")
+    st.markdown("---")
+    # st.subheader("📬 Notification Preference")
 
+    end_customer = st.radio(
+        "Who is the end customer?",
+        options=["B2B", "B2C", "Both"],
+        index=2,  # Default to "Both"
+        key="end_customer"
+    )
     # --- Handling Types ---
     col1, col2 = st.columns(2)
 
@@ -550,6 +558,7 @@ def append_multiple_contacts_to_google_sheet(lead_data: dict, contacts: list):
             "Handling Out Required [Yes/No]",
             "Handling In Type [Loose/Palletised]",
             "Handling Out Type [Loose/Palletised/Pieces]",
+            "End Customer"
             "Mixed SKUs",
             "Segregation Required",
             "No of SKU's",
@@ -669,6 +678,7 @@ if st.button("Submit Form"):
         "Handling Out Required [Yes/No]": handling_out,
         "Handling In Type [Loose/Palletised]": handling_in_type,
         "Handling Out Type [Loose/Palletised/Pieces]": handling_out_type,
+        "End Customer":end-customer,
         "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
         "Segregation Required": segregation_required,
         "No of SKU's": sku_count if 'sku_count' in locals() else "N/A",
