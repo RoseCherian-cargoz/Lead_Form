@@ -415,8 +415,8 @@ if handling_out == "Yes":
     #         """, unsafe_allow_html=True)
 
     if sku_count and sku_count > 5:
-    cbm = 0.0
-    pallet_qty = 0
+    # cbm = 0.0
+    # pallet_qty = 0
 
     st.markdown("""
         <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
