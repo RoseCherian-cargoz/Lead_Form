@@ -99,6 +99,15 @@ for idx, contact in enumerate(st.session_state.contacts):
 if st.button("➕ Add Another Contact"):
     add_contact()
 
+st.markdown("---")
+# st.subheader("📬 Notification Preference")
+
+notification_method = st.radio(
+    "How would you like to be notified?",
+    options=["Email", "WhatsApp", "Both"],
+    index=2,  # Default to "Both"
+    key="notification_method"
+)
 
 # ------------------- SECTION 2: Storage Needs -------------------
 st.header("✅ Section 2: Storage Needs")
@@ -499,6 +508,7 @@ def append_multiple_contacts_to_google_sheet(lead_data: dict, contacts: list):
             "Email",
             "Phone",
             "Role",
+            "Notification Preference",
             "Location Constraints",
             "Selected Location",
             "Commodity Type",
@@ -617,6 +627,7 @@ if st.button("Submit Form"):
 
     lead_data = {
         "Company Name": company_name,
+        "Notification Preference":notification_method,
         "Location Constraints": location_constraint,
         "Selected Location": ", ".join(storage_location),
         "Commodity Type": commodity_type,
