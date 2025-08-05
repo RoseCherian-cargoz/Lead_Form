@@ -363,36 +363,32 @@ if detailed_space_required:
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.caption("Average Weight (kg)")
+        st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
         average_weight = st.text_input(
-            label=" ",  # Dummy label
-            help="Enter average weight of the packages",
-            label_visibility="collapsed"
+            "Average Weight (kg)",
+            help="Enter average weight of the packages"
         )
 
     with col2:
-        st.caption("Dimensions (L x W x H in cm)")
+        st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
         dimensions = st.text_input(
-            label=" ",
-            help="Enter typical dimensions of packages",
-            label_visibility="collapsed"
+            "Dimensions (L x W x H in cm)",
+            help="Enter typical dimensions of packages"
         )
 
     with col3:
-        st.caption("Approximate Space Required")
+        st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
         approx_space = st.text_input(
-            label=" ",
-            help="Rough estimate of total space needed",
-            label_visibility="collapsed"
+            "Approximate Space Required",
+            help="Rough estimate of total space needed"
         )
 
     with col4:
-        st.caption("Space Unit")
+        st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
         detailed_space_unit = st.selectbox(
-            label=" ",
+            "Space Unit",
             options=["CBM", "SQFT", "Pallets", "Not Sure"],
             help="Choose unit of space measurement",
-            label_visibility="collapsed",
             key="detailed_space_unit"
         )
 
