@@ -325,24 +325,24 @@ st.header("✅ Section 3: Space Assessment")
 
 # --- Package Type Selection ---
 package_types = ["Crates", "Boxes", "Bags", "Oversized/Overweight", "Pallets", "Other"]
-space_units = ["CBM", "SQFT", "Pallets", "Not Sure"]
+# space_units = ["CBM", "SQFT", "Pallets", "Not Sure"]
 
 # --- Row 1: Package Type & Space Unit ---
-row1_col1, row1_col2 = st.columns(2)
+# row1_col1, row1_col2 = st.columns(2)
 
-with row1_col1:
-    selected_package_types = st.multiselect(
-        "Package Type(s)",
-        options=package_types,
-        help="Select all applicable package types"
-    )
+# with row1_col1:
+selected_package_types = st.multiselect(
+    "Package Type(s)",
+    options=package_types,
+    help="Select all applicable package types"
+)
 
-with row1_col2:
-    space_unit = st.selectbox(
-        "Space Unit",
-        options=space_units,
-        help="Choose unit of space measurement"
-    )
+# with row1_col2:
+#     space_unit = st.selectbox(
+#         "Space Unit",
+#         options=space_units,
+#         help="Choose unit of space measurement"
+#     )
 
 # --- Number of Packages ---
 num_packages_dict = {}
@@ -355,10 +355,11 @@ for package in selected_package_types:
 
 # --- Row 2: Show only if detailed info required ---
 space_types = ["Crates", "Bags", "Oversized/Overweight", "Pallets"]
+space_units = ["CBM", "SQFT", "Pallets", "Not Sure"]
 if any(pt in selected_package_types for pt in space_types):
     st.subheader("📏 Detailed Space Requirements")
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3,col4 = st.columns(4)
 
     with col1:
         average_weight = st.text_input(
@@ -377,6 +378,12 @@ if any(pt in selected_package_types for pt in space_types):
             "Approximate Space Required",
             help="Rough estimate of total space needed"
         )
+    with col4:
+        space_unit = st.selectbox(
+        "Space Unit",
+        options=space_units,
+        help="Choose unit of space measurement"
+    )
 #------Packing list--------
 packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf","doc","jpg","png"],help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record")
 
