@@ -363,11 +363,11 @@ if detailed_space_required:
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-    st.markdown("<br>", unsafe_allow_html=True)  # Adds visual space above
-    average_weight = st.text_input(
-        "Average Weight (kg)",
-        help="Enter average weight of the packages"
-    )
+        st.markdown("<br>", unsafe_allow_html=True)  # Adds visual space above
+        average_weight = st.text_input(
+            "Average Weight (kg)",
+            help="Enter average weight of the packages"
+        )
 
 
     with col2:
