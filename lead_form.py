@@ -355,11 +355,12 @@ for package in selected_package_types:
 
 # --- Row 2: Show only if detailed info required ---
 space_types = ["Crates", "Bags", "Oversized/Overweight", "Pallets"]
-space_units = ["CBM", "SQFT", "Pallets", "Not Sure"]
-if any(pt in selected_package_types for pt in space_types):
+detailed_space_required = any(pt in selected_package_types for pt in space_types)
+
+if detailed_space_required:
     st.subheader("📏 Detailed Space Requirements")
 
-    col1, col2, col3,col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         average_weight = st.text_input(
@@ -371,19 +372,21 @@ if any(pt in selected_package_types for pt in space_types):
         dimensions = st.text_input(
             "Dimensions (L x W x H in cm)",
             help="Enter typical dimensions of packages"
-        ) 
+        )
 
     with col3:
         approx_space = st.text_input(
             "Approximate Space Required",
             help="Rough estimate of total space needed"
         )
+
     with col4:
-        space_unit = st.selectbox(
-        "Space Unit",
-        options=space_units,
-        help="Choose unit of space measurement"
-    )
+        detailed_space_unit = st.selectbox(
+            "Space Unit",
+            options=["CBM", "SQFT", "Pallets", "Not Sure"],
+            help="Choose unit of space measurement",
+            key="detailed_space_unit"
+        )
 #------Packing list--------
 packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf","doc","jpg","png"],help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record")
 
