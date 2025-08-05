@@ -360,9 +360,9 @@ detailed_space_required = any(pt in selected_package_types for pt in space_types
 if detailed_space_required:
     st.subheader("📏 Detailed Space Requirements")
 
-    col1, col2, col3, col4 = st.columns(4)
+    # First row of inputs
+    col1, col2 = st.columns(2)
 
-    # Use markdown headers to equalize vertical spacing
     with col1:
         st.markdown("### &nbsp;", unsafe_allow_html=True)
         average_weight = st.text_input(
@@ -376,6 +376,9 @@ if detailed_space_required:
             "Dimensions (L x W x H in cm)",
             help="Enter typical dimensions of packages"
         )
+
+    # Second row of inputs
+    col3, col4 = st.columns(2)
 
     with col3:
         st.markdown("### &nbsp;", unsafe_allow_html=True)
