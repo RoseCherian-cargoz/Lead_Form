@@ -364,6 +364,7 @@ if detailed_space_required:
 
     with col1:
         average_weight = st.text_input(
+            ""
             "Average Weight (kg)",
             help="Enter average weight of the packages"
         )
@@ -382,6 +383,7 @@ if detailed_space_required:
 
     with col4:
         detailed_space_unit = st.selectbox(
+            ""
             "Space Unit",
             options=["CBM", "SQFT", "Pallets", "Not Sure"],
             help="Choose unit of space measurement",
