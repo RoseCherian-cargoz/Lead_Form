@@ -292,13 +292,12 @@ with row7_col1:
 # and handling/inventory tracking preferences for the lead.
 #
 # Features:
-# - Package Types & Space Units:
-#     - Select one or more package types (Crates, Boxes, Pallets, etc.).
-#     - Choose the unit of space measurement (CBM, SQFT, Pallets, Not Sure).
+# - Package Types:
+#     - Select one or more package types (Crates, Boxes, Pallets, etc.)..
 #     - Input the number of packages per selected package type.
 # - Detailed Space Requirements:
 #     - If specific package types are selected, additional inputs for average weight,
-#       dimensions, and approximate space required appear.
+#       dimensions, approximate space required, and space unit appear.
 # - Packing List Upload:
 #     - File uploader for packing list documents, linked with WhatsApp document handling.
 # - Handling Requirements:
@@ -325,10 +324,9 @@ st.header("✅ Section 3: Space Assessment")
 
 # --- Package Type Selection ---
 package_types = ["Crates", "Boxes", "Bags", "Oversized/Overweight", "Pallets", "Other"]
-# space_units = ["CBM", "SQFT", "Pallets", "Not Sure"]
 
-# --- Row 1: Package Type & Space Unit ---
-# row1_col1, row1_col2 = st.columns(2)
+
+# --- Row 1: Package Type ---
 
 # with row1_col1:
 selected_package_types = st.multiselect(
@@ -336,13 +334,6 @@ selected_package_types = st.multiselect(
     options=package_types,
     help="Select all applicable package types"
 )
-
-# with row1_col2:
-#     space_unit = st.selectbox(
-#         "Space Unit",
-#         options=space_units,
-#         help="Choose unit of space measurement"
-#     )
 
 # --- Number of Packages ---
 num_packages_dict = {}
@@ -428,7 +419,6 @@ if handling_out == "Yes":
     #---------------Section 4 - Inventory and Tracking--------------
     st.header("✅ Section 4: Inventory & Tracking")
     st.markdown("---")
-    # st.subheader("📬 Notification Preference")
 
     end_customer = st.radio(
         "Who is the end customer?",
@@ -628,7 +618,6 @@ def append_multiple_contacts_to_google_sheet(lead_data: dict, contacts: list):
             "Risk Factor Comments",
             "Expected Start Date",
             "Package Type(s)",
-            "Space Unit",
             "Number of Crates (if selectd)",
             "Number of Boxes (if selectd)",
             "Number of Bags (if selectd)",
@@ -638,6 +627,7 @@ def append_multiple_contacts_to_google_sheet(lead_data: dict, contacts: list):
             "Avg Weight (KG)",
             "Dimensions (L X W X H in cm)",
             "Approximate Space Required",
+            "Space Unit",
             "Packing List File (link)",
             "Handling In Required [Yes/No]",
             "Handling Out Required [Yes/No]",
@@ -749,7 +739,6 @@ if st.button("Submit Form"):
         "Risk Factor Comments": risk_factor_comment if risk_factor == "Yes" else "N/A",
         "Expected Start Date": expected_start.strftime("%Y-%m-%d"),
         "Package Type(s)": ", ".join(selected_package_types),
-        "Space Unit": space_unit,
         "Number of Crates (if selectd)": num_packages_dict.get("Crates", "N/A"),
         "Number of Boxes (if selectd)": num_packages_dict.get("Boxes", "N/A"),
         "Number of Bags (if selectd)": num_packages_dict.get("Bags", "N/A"),
@@ -759,6 +748,7 @@ if st.button("Submit Form"):
         "Avg Weight (KG)": average_weight if 'average_weight' in locals() else "N/A",
         "Dimensions (L X W X H in cm)": dimensions if 'dimensions' in locals() else "N/A",
         "Approximate Space Required": approx_space if 'approx_space' in locals() else "N/A",
+        "Space Unit": space_unit,
         "Packing List File (link)": packing_list_link,
         "Handling In Required [Yes/No]": handling_in,
         "Handling Out Required [Yes/No]": handling_out,
