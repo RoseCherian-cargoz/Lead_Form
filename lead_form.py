@@ -362,29 +362,30 @@ if detailed_space_required:
 
     col1, col2, col3, col4 = st.columns(4)
 
+    # Use markdown headers to equalize vertical spacing
     with col1:
-        st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
+        st.markdown("### &nbsp;", unsafe_allow_html=True)
         average_weight = st.text_input(
             "Average Weight (kg)",
             help="Enter average weight of the packages"
         )
 
     with col2:
-        st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
+        st.markdown("### &nbsp;", unsafe_allow_html=True)
         dimensions = st.text_input(
             "Dimensions (L x W x H in cm)",
             help="Enter typical dimensions of packages"
         )
 
     with col3:
-        st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
+        st.markdown("### &nbsp;", unsafe_allow_html=True)
         approx_space = st.text_input(
             "Approximate Space Required",
             help="Rough estimate of total space needed"
         )
 
     with col4:
-        st.markdown("<div style='height:2px'></div>", unsafe_allow_html=True)
+        st.markdown("### &nbsp;", unsafe_allow_html=True)
         detailed_space_unit = st.selectbox(
             "Space Unit",
             options=["CBM", "SQFT", "Pallets", "Not Sure"],
