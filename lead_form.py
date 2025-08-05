@@ -243,12 +243,12 @@ with row3_col2:
             help="Enter the required storage temperature"
         )
 
-                # Show additional comment field if "Other" is selected
-        if storage_type == "Other":
-            other_storage_comment = st.text_area(
-                "Please describe the 'Other' storage type",
-                help="Provide more details about the storage requirement if it's not listed above"
-            )
+# Show additional comment field if "Other" is selected
+if storage_type == "Other":
+    other_storage_comment = st.text_area(
+        "Please describe the 'Other' storage type",
+        help="Provide more details about the storage requirement if it's not listed above"
+    )
 # Row 4: Cargo Location
 row4_col1, _ = st.columns([1, 1])
 with row4_col1:
