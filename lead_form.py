@@ -243,6 +243,12 @@ with row3_col2:
             help="Enter the required storage temperature"
         )
 
+                # Show additional comment field if "Other" is selected
+        if storage_type == "Other":
+            other_storage_comment = st.text_area(
+                "Please describe the 'Other' storage type",
+                help="Provide more details about the storage requirement if it's not listed above"
+            )
 # Row 4: Cargo Location
 row4_col1, _ = st.columns([1, 1])
 with row4_col1:
@@ -599,6 +605,7 @@ def append_multiple_contacts_to_google_sheet(lead_data: dict, contacts: list):
             "DG Class",
             "MSDS Uploaded",
             "Storage Type",
+            "Other Storage Comment",
             "Specific Temperature (°C)",
             "Where is the Cargo now",
             "Comments on cargo location",
@@ -719,6 +726,7 @@ if st.button("Submit Form"):
         "DG Class": ", ".join(dg_class_selected) if isinstance(dg_class_selected, list) else dg_class_selected,
         "MSDS Uploaded": msds_link,
         "Storage Type": storage_type,
+        "Other Storage Comment":other_storage_comment,
         "Specific Temperature (°C)": required_temperature if required_temperature else "N/A",
         "Where is the Cargo now": cargo_location,
         "Comments on cargo location": cargo_location_comment,
