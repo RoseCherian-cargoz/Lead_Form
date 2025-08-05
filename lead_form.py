@@ -363,11 +363,12 @@ if detailed_space_required:
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        average_weight = st.text_input(
-            ""
-            "Average Weight (kg)",
-            help="Enter average weight of the packages"
-        )
+    st.markdown("<br>", unsafe_allow_html=True)  # Adds visual space above
+    average_weight = st.text_input(
+        "Average Weight (kg)",
+        help="Enter average weight of the packages"
+    )
+
 
     with col2:
         dimensions = st.text_input(
@@ -380,15 +381,15 @@ if detailed_space_required:
             "Approximate Space Required",
             help="Rough estimate of total space needed"
         )
-
     with col4:
+        st.markdown("<br>", unsafe_allow_html=True)  # Adds vertical spacing
         detailed_space_unit = st.selectbox(
-            ""
             "Space Unit",
             options=["CBM", "SQFT", "Pallets", "Not Sure"],
             help="Choose unit of space measurement",
             key="detailed_space_unit"
         )
+
 #------Packing list--------
 packing_list = st.file_uploader("Upload Packing List (from WhatsApp)", type=["pdf","doc","jpg","png"],help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record")
 
