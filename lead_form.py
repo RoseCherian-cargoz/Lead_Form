@@ -497,7 +497,7 @@ except:
     pallet_qty = 0
 
 # Display warning only if any of the three conditions are met
-if (sku_count and sku_count > 5) 
+if (sku_count and sku_count > 5):
 # or \
 #    (space_unit == "CBM" and cbm_qty > 3) or \
 #    (space_unit == "Pallets" and pallet_qty > 5):
