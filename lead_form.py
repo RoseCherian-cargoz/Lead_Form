@@ -497,14 +497,15 @@ except:
     pallet_qty = 0
 
 # Display warning only if any of the three conditions are met
-# if (sku_count and sku_count > 5) or \
+if (sku_count and sku_count > 5) 
+# or \
 #    (space_unit == "CBM" and cbm_qty > 3) or \
 #    (space_unit == "Pallets" and pallet_qty > 5):
-#     st.markdown("""
-#         <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
-#         ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
-#         </div>
-#     """, unsafe_allow_html=True)
+    st.markdown("""
+        <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+        ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
+        </div>
+    """, unsafe_allow_html=True)
 
 
 # --- Additional Tracking Output Style ---
