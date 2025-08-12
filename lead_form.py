@@ -529,7 +529,7 @@ if handling_out == "Yes":
     # --- Tracking Details Required ---
     tracking_details = st.multiselect(
         "What tracking details do you need?",
-        ["Lot Number", "SKU Value", "Expiry Date"],
+        ["Lot Number/Batch bumber/Part Number ", "SKU Value", "Expiry Date"],
         key="tracking_details"
     )
 
