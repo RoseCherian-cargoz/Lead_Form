@@ -765,7 +765,7 @@ if st.button("Submit Form"):
         "Handling Out Required [Yes/No]": handling_out,
         "Handling In Type [Loose/Palletised]": handling_in_type,
         "Handling Out Type [Loose/Palletised/Pieces]": handling_out_type,
-        "End Customer":end-customer,
+        "End Customer":end_customer,
         "Mixed SKUs": mixed_skus if 'mixed_skus' in locals() else "N/A",
         "Segregation Required": segregation_required,
         "No of SKU's": sku_count if 'sku_count' in locals() else "N/A",
