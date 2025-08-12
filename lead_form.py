@@ -413,7 +413,6 @@ if handling_out == "No":
         If tracking is important, warehouse must assist with Handling Out.
         </div>
     """, unsafe_allow_html=True)
-
 # You can now use `handling_out` to conditionally display Section 4
 if handling_out == "Yes":
     #---------------Section 4 - Inventory and Tracking--------------
@@ -426,6 +425,7 @@ if handling_out == "Yes":
         index=2,  # Default to "Both"
         key="end_customer"
     )
+
     # --- Handling Types ---
     col1, col2 = st.columns(2)
 
@@ -443,17 +443,16 @@ if handling_out == "Yes":
             key="handling_out_type"
         )
 
-    # --- SKU Logic Branches ---
+    # --- Initialize Variables ---
     sku_count = None
     segregation = None
-    seg_charges_note = ""
-    inventory_charge_warning = ""
+    mixed_skus = "No"
 
+    # --- SKU Logic Branches ---
     if (handling_in_type == "Loose" and handling_out_type == "Loose") or \
        (handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]):
 
         st.subheader("🧩 SKU Details")
-        mixed_skus = "No"
         segregation = "No"
 
         if handling_in_type == "Palletized" and handling_out_type in ["Loose", "Palletized"]:
@@ -482,60 +481,57 @@ if handling_out == "Yes":
             min_value=1,
             step=1
         )
+
     # --- Inventory Charges Warning ---
-cbm_qty = 0
-pallet_qty = 0
-
-try:
-    cbm_qty = float(num_packages_dict.get("CBM", 0)) if "CBM" in num_packages_dict else 0
-except:
     cbm_qty = 0
-
-try:
-    pallet_qty = int(num_packages_dict.get("Pallets", 0)) if "Pallets" in num_packages_dict else 0
-except:
     pallet_qty = 0
 
-# Display warning only if any of the three conditions are met
-if (sku_count and sku_count > 5):
-# or \
-#    (space_unit == "CBM" and cbm_qty > 3) or \
-#    (space_unit == "Pallets" and pallet_qty > 5):
-    st.markdown("""
-        <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
-        ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
-        </div>
-    """, unsafe_allow_html=True)
+    try:
+        cbm_qty = float(num_packages_dict.get("CBM", 0)) if "CBM" in num_packages_dict else 0
+    except:
+        cbm_qty = 0
 
+    try:
+        pallet_qty = int(num_packages_dict.get("Pallets", 0)) if "Pallets" in num_packages_dict else 0
+    except:
+        pallet_qty = 0
 
-# --- Additional Tracking Output Style ---
-output_method = st.selectbox(
-    "How will you take out the items later?",
-    ["Loose", "Palletised", "Pieces"],
-    key="tracking_out_method"
-)
+    if sku_count and sku_count > 5:
+        st.markdown("""
+            <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+            ❗ <strong>Inventory charges will apply.</strong> The partner will provide the cost.
+            </div>
+        """, unsafe_allow_html=True)
 
-if output_method == "Palletised":
-    st.markdown("""
-        <div style="background-color:#fff3cd; border-left:6px solid #ffc107; padding:10px; border-radius:4px;">
-        🟡 <strong>Inventory will be tracked per pallet only.</strong> Boxes inside will not be tracked.
-        </div>
-    """, unsafe_allow_html=True)
-elif output_method == "Pieces":
-    st.markdown("""
-        <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
-        ❗ <strong>Piece-picking requires a fulfilment centre.</strong><br>
-        If volume &lt; 40 CBM, recommend storing 30 CBM (Box Level) with us and the rest in a fulfilment centre.<br><br>
-        ⚠️ <strong>Note:</strong> If piece picking is agreed upon, the <strong>Storage Billing UOM</strong> should be <strong>Pallet</strong>.
-        </div>
-    """, unsafe_allow_html=True)
+    # --- Additional Tracking Output Style ---
+    output_method = st.selectbox(
+        "How will you take out the items later?",
+        ["Loose", "Palletised", "Pieces"],
+        key="tracking_out_method"
+    )
 
-# --- Tracking Details Required ---
-tracking_details = st.multiselect(
-    "What tracking details do you need?",
-    ["Lot Number", "SKU Value", "Expiry Date"],
-    key="tracking_details"
-)
+    if output_method == "Palletised":
+        st.markdown("""
+            <div style="background-color:#fff3cd; border-left:6px solid #ffc107; padding:10px; border-radius:4px;">
+            🟡 <strong>Inventory will be tracked per pallet only.</strong> Boxes inside will not be tracked.
+            </div>
+        """, unsafe_allow_html=True)
+
+    elif output_method == "Pieces":
+        st.markdown("""
+            <div style="background-color:#f8d7da; border-left:6px solid #dc3545; padding:10px; border-radius:4px;">
+            ❗ <strong>Piece-picking requires a fulfilment centre.</strong><br>
+            If volume &lt; 40 CBM, recommend storing 30 CBM (Box Level) with us and the rest in a fulfilment centre.<br><br>
+            ⚠️ <strong>Note:</strong> If piece picking is agreed upon, the <strong>Storage Billing UOM</strong> should be <strong>Pallet</strong>.
+            </div>
+        """, unsafe_allow_html=True)
+
+    # --- Tracking Details Required ---
+    tracking_details = st.multiselect(
+        "What tracking details do you need?",
+        ["Lot Number", "SKU Value", "Expiry Date"],
+        key="tracking_details"
+    )
 
 else:
     # Default values when Handling Out = No
@@ -547,6 +543,7 @@ else:
     sku_count = "N/A"
     output_method = "N/A"
     tracking_details = []
+
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents", accept_multiple_files=True,help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record.")
