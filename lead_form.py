@@ -537,6 +537,16 @@ tracking_details = st.multiselect(
     key="tracking_details"
 )
 
+else:
+    # Default values when Handling Out = No
+    end_customer = "N/A"
+    handling_in_type = "N/A"
+    handling_out_type = "N/A"
+    mixed_skus = "N/A"
+    segregation = "N/A"
+    sku_count = "N/A"
+    output_method = "N/A"
+    tracking_details = []
 # ------------------- Documents Section -------------------
 st.header("📎 Documents from WhatsApp")
 documents = st.file_uploader("Upload Documents", accept_multiple_files=True,help="A WhatsApp message should be sent to the lead requesting the required documents, which will then be received directly through WhatsApp and automatically pushed into the backend Odoo system, mapped to the appropriate record.")
