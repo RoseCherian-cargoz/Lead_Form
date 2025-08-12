@@ -244,11 +244,14 @@ with row3_col2:
         )
 
 # Show additional comment field if "Other" is selected
-if storage_type == "Other":
+if "Other" in storage_type:
     other_storage_comment = st.text_area(
         "Please describe the 'Other' storage type",
         help="Provide more details about the storage requirement if it's not listed above"
     )
+else:
+    other_storage_comment = None
+
 # Row 4: Cargo Location
 row4_col1, _ = st.columns([1, 1])
 with row4_col1:
