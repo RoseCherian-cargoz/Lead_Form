@@ -738,7 +738,7 @@ if st.button("Submit Form"):
         "Commodity Name": commodity_name,
         "DG Class": ", ".join(dg_class_selected) if isinstance(dg_class_selected, list) else dg_class_selected,
         "MSDS Uploaded": msds_link,
-        "Storage Type": ",".join(storage_type,)
+        "Storage Type": ",".join(storage_type),
         "Other Storage Comment":other_storage_comment,
         "Specific Temperature (°C)": required_temperature if required_temperature else "N/A",
         "Where is the Cargo now": cargo_location,
