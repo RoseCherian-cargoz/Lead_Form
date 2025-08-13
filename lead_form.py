@@ -760,7 +760,7 @@ if st.button("Submit Form"):
         "Dimensions (L X W X H in cm)": dimensions if 'dimensions' in locals() else "N/A",
         "Approximate Space Required": approx_space if 'approx_space' in locals() else "N/A",
         "Space Unit": space_unit if 'space_unit' in locals() else "N/A",
-        "Packing List File (link)": packing_list_link
+        "Packing List File (link)": packing_list_link,
         "Handling In Required [Yes/No]": handling_in,
         "Handling Out Required [Yes/No]": handling_out,
         "Handling In Type [Loose/Palletised]": handling_in_type,
