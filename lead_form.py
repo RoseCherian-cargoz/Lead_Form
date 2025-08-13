@@ -759,8 +759,8 @@ if st.button("Submit Form"):
         "Avg Weight (KG)": average_weight if 'average_weight' in locals() else "N/A",
         "Dimensions (L X W X H in cm)": dimensions if 'dimensions' in locals() else "N/A",
         "Approximate Space Required": approx_space if 'approx_space' in locals() else "N/A",
-        "Space Unit": space_unit,
-        "Packing List File (link)": packing_list_link,
+        "Space Unit": space_unit if 'space_unit' in locals() else "N/A",
+        "Packing List File (link)": packing_list_link
         "Handling In Required [Yes/No]": handling_in,
         "Handling Out Required [Yes/No]": handling_out,
         "Handling In Type [Loose/Palletised]": handling_in_type,
