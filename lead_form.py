@@ -379,11 +379,11 @@ if detailed_space_required:
         )
 
     with col4:
-        detailed_space_unit = st.selectbox(
+        space_unit = st.selectbox(
             "Space Unit",
             options=["CBM", "SQFT", "Pallets", "Not Sure"],
             help="Choose unit of space measurement",
-            key="detailed_space_unit"
+            key="space_unit"
         )
 
 #------Packing list--------
@@ -759,7 +759,7 @@ if st.button("Submit Form"):
         "Avg Weight (KG)": average_weight if 'average_weight' in locals() else "N/A",
         "Dimensions (L X W X H in cm)": dimensions if 'dimensions' in locals() else "N/A",
         "Approximate Space Required": approx_space if 'approx_space' in locals() else "N/A",
-        "Space Unit": detailed_space_unit,
+        "Space Unit": space_unit,
         "Packing List File (link)": packing_list_link,
         "Handling In Required [Yes/No]": handling_in,
         "Handling Out Required [Yes/No]": handling_out,
